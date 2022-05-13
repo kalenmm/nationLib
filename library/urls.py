@@ -1,9 +1,9 @@
 from django.urls import path
-from . import views
+from .views import *
 
 app_name = 'library'
 urlpatterns = [
-    path('', views.IndexView, name='index'),
-    path('login/', views.LoginView, name='login'),
-    path('register/', views.RegisterView, name='register'),
+    path('', IndexView, name='index'),
+    path('login/', LoginView, name='login'),
+    path('register/', RegisterView, name='register'),
 ]

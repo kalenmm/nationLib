@@ -3,17 +3,8 @@ from django.db import models
 
 class Book(models.Model):
     ISBN = models.IntegerField(primary_key=True)
-    book_img = models.ImageField(upload_to='book_img')
-    publishing_house = models.CharField(max_length=200)
-    book_country = models.CharField(max_length=200)
-    book_description = models.CharField(max_length=1000)
     name = models.CharField(max_length=200)
     year = models.DateTimeField('Date published')
-
-
-class BookPDF(models.Model):
-    book_content = models.ForeignKey(Book, on_delete=models.CASCADE)
-    book_pdf = models.FileField(upload_to='book_pdf')
 
 
 class User(models.Model):
@@ -35,7 +26,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=200)
 
 
-class GenreList(models.Model):
+class List(models.Model):
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     genre_id = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
@@ -80,10 +71,4 @@ class BugReport(models.Model):
     error_status = models.CharField(max_length=30)
     text = models.CharField(max_length=500)
 
-
-class ADS(models.Model):
-    ads = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    text = models.CharField(max_length=750)
-    date_pub = models.DateTimeField('Date published')
 

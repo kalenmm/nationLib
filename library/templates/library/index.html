@@ -5,6 +5,20 @@
     <title>Index</title>
 </head>
 <body>
-<p></p>
+{% for book in latest_books %}
+    <h1>{{book.ISBN}}</h1>
+    <h2>{{book.year}}</h2>
+{% endfor %}
+<h3>
+{% for genre in genres %}
+    {{genre.name}}
+{% endfor %}
+
+{% for chec in check %}
+    <h1>{{chec.ISBN.ISBN}}</h1>
+    <h2>{{chec.ISBN.year}}</h2>
+{% endfor %}
+</h3>
 </body>
+
 </html>
