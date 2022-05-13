@@ -32,7 +32,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=200)
 
 
-class List(models.Model):
+class GenreList(models.Model):
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     genre_id = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
