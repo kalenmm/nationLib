@@ -4,6 +4,9 @@ from django.db import models
 class Book(models.Model):
     ISBN = models.IntegerField(primary_key=True)
     book_img = models.ImageField(upload_to='book_img')
+    publishing_house = models.CharField(max_length=200)
+    book_country = models.CharField(max_length=200)
+    book_description = models.CharField(max_length=1000)
     name = models.CharField(max_length=200)
     year = models.DateTimeField('Date published')
 
@@ -83,5 +86,4 @@ class ADS(models.Model):
     title = models.CharField(max_length=200)
     text = models.CharField(max_length=750)
     date_pub = models.DateTimeField('Date published')
-
 
