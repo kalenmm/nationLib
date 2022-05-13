@@ -78,3 +78,10 @@ class BugReport(models.Model):
     text = models.CharField(max_length=500)
 
 
+class ADS(models.Model):
+    ads = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.CharField(max_length=750)
+    date_pub = models.DateTimeField('Date published')
+
+
