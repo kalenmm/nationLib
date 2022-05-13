@@ -3,8 +3,14 @@ from django.db import models
 
 class Book(models.Model):
     ISBN = models.IntegerField(primary_key=True)
+    book_img = models.ImageField(upload_to='book_img')
     name = models.CharField(max_length=200)
     year = models.DateTimeField('Date published')
+
+
+class BookPDF(models.Model):
+    book_content = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book_pdf = models.FileField(upload_to='book_pdf')
 
 
 class User(models.Model):
