@@ -2,11 +2,11 @@ from django.db import models
 
 
 class Book(models.Model):
-    ISBN = models.IntegerField(primary_key=True, auto_created=models.BigAutoField)
-    book_img = models.ImageField(upload_to='book_img')
-    publishing_house = models.CharField(max_length=200)
-    book_country = models.CharField(max_length=200)
-    book_description = models.CharField(max_length=1000)
+    ISBN = models.IntegerField(primary_key=True)
+    book_img = models.ImageField(upload_to='book_img', null=True)
+    publishing_house = models.CharField(max_length=200, null=True)
+    book_country = models.CharField(max_length=200, null=True)
+    book_description = models.CharField(max_length=1000, null=True)
     name = models.CharField(max_length=200)
     year = models.DateTimeField('Date published')
 
