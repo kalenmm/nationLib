@@ -7,9 +7,15 @@ def IndexView(request):
     template_name = "library/index.html"
     latest_books = Book.objects.order_by('pk')[:2][::-1]
     genres = Genre.objects.order_by('pk')
-    check = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:2][::-1]
+    populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:2][::-1]
+    authors = []
+    last = LastPage.objects.order_by('pk')
+    news = ADS.objects.order_by('pk')
+    for popular in populars:
+        author = AB.objects.filter(ISBN=popular.ISBN.ISBN)
+        authors.append(author[0].author_id)
     return render(request, template_name,
-                  {"latest_books": latest_books, "genres": genres, 'check' : check})
+                  {"latest_books": latest_books, "genres": genres, 'check': populars, "authors": authors, "lasts": last, "news": news})
 
 
 def LoginView(request):
@@ -20,4 +26,3 @@ def LoginView(request):
 def RegisterView(request):
     template_name = "library/register.html"
     return render(request, template_name)
-

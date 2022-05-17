@@ -5,20 +5,39 @@
     <title>Index</title>
 </head>
 <body>
+<h1>Новые книги</h1>
 {% for book in latest_books %}
-    <h1>{{book.ISBN}}</h1>
-    <h2>{{book.year}}</h2>
+    <h2 href="book/{{book.pk}}">{{book.name}}</h2>
+    <img src="{{book.book_img}}" href="book/{{book.pk}}">
 {% endfor %}
-<h3>
+<h1>Жанры</h1>
 {% for genre in genres %}
-    {{genre.name}}
+    <h2>{{genre.name}}</h2>
 {% endfor %}
-
+<h1>Новости</h1>
+{% for new in news %}
+    <h2>{{new.title}}</h2>
+    <h2>{{new.text}}</h2>
+    <h2>{{new.date_pub}}</h2>
+{% endfor %}
+{% if user.is_authenticated%}
+    <h1>Последник книги</h1>
+    {% for last in lasts %}
+    <h2 href="book/{{last.paper_id.ISBN.pk}}">{{last.paper_id.ISBN.name}}</h2>
+    <img src="{{last.paper_id.ISBN.book_img}}" href="book/{{last.paper_id.ISBN.pk}}">
+{% endfor %}
+{%else%}
+<h1>Авторы</h1>
+{% for author in authors %}
+    <h2>{{author.first_name}}</h2>
+    <h2>{{author.last_name}}</h2>
+{% endfor %}
+{%endif%}
+<h1>Популярные книги</h1>
 {% for chec in check %}
-    <h1>{{chec.ISBN.ISBN}}</h1>
-    <h2>{{chec.ISBN.year}}</h2>
+    <h2 href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</h2>
+    <img src="{{chec.ISBN.book_img}}" href="book/{{chec.ISBN.pk}}">
 {% endfor %}
-</h3>
 </body>
 
 </html>
