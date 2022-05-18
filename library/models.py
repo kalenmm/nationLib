@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Book(models.Model):
@@ -17,13 +18,9 @@ class BookPDF(models.Model):
     book_pdf = models.FileField(upload_to='book_pdf')
 
 
-class User(models.Model):
+class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     user_id = models.IntegerField(primary_key=False)
-    email = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-    first_name = models.CharField(max_length=180)
-    last_name = models.CharField(max_length=180)
     authority = models.CharField(max_length=100)
 
 
@@ -99,4 +96,3 @@ class ADS(models.Model):
     title = models.CharField(max_length=200)
     text = models.CharField(max_length=750)
     date_pub = models.DateTimeField('Date published')
-
