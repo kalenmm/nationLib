@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as LibraryAdmin
 from .models import *
 from django.contrib.auth.admin import UserAdmin
 
@@ -53,15 +52,17 @@ class LibraryUser(UserAdmin):
     )
 
 
-
-class UserAdmin(LibraryAdmin):
-    pass
-
-
-admin.site.register(Book, Comments)
-admin.site.register(User, UserAdmin)
-admin.site.register(Paper, Genre)
-admin.site.register(Bookmarks, Author)
-admin.site.register(LastPage, BugReport)
-admin.site.register(Rating, GenreList)
-admin.site.register(AB, ADS)
+admin.site.register(Book)
+admin.site.register(Comments)
+admin.site.register(UserAdmin)
+admin.site.register(User, LibraryUser)
+admin.site.register(Paper)
+admin.site.register(Genre)
+admin.site.register(Bookmarks)
+admin.site.register(Author)
+admin.site.register(LastPage)
+admin.site.register(BugReport)
+admin.site.register(Rating)
+admin.site.register(GenreList)
+admin.site.register(AB)
+admin.site.register(ADS)
