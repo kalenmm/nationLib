@@ -16,5 +16,5 @@ def LoginView(request):
 
 def RegisterView(request):
     template_name = 'library/register.html'
-    return render(response, template_name)
+    return render(request, template_name)
 

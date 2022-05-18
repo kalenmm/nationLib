@@ -54,7 +54,6 @@ class LibraryUser(UserAdmin):
 
 admin.site.register(Book)
 admin.site.register(Comments)
-admin.site.register(UserAdmin)
 admin.site.register(User, LibraryUser)
 admin.site.register(Paper)
 admin.site.register(Genre)

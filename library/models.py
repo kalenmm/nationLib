@@ -20,7 +20,6 @@ class BookPDF(models.Model):
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField(primary_key=False)
     authority = models.CharField(max_length=100)
 
 
