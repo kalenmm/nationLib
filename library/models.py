@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Book(models.Model):
@@ -17,13 +18,8 @@ class BookPDF(models.Model):
     book_pdf = models.FileField(upload_to='book_pdf')
 
 
-class User(models.Model):
+class LibraryUser(AbstractUser):
     id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField(primary_key=False)
-    email = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-    first_name = models.CharField(max_length=180)
-    last_name = models.CharField(max_length=180)
     authority = models.CharField(max_length=100)
 
 
@@ -47,21 +43,21 @@ class GenreList(models.Model):
 
 class Comments(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
 
 
 class Rating(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     mark = models.IntegerField()
 
 
 class Bookmarks(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
 
@@ -81,13 +77,13 @@ class AB(models.Model):
 
 class LastPage(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     paper_id = models.ForeignKey(Paper, on_delete=models.CASCADE)
 
 
 class BugReport(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     error_type = models.CharField(max_length=100)
     error_status = models.CharField(max_length=30)
     text = models.CharField(max_length=500)
@@ -95,7 +91,7 @@ class BugReport(models.Model):
 
 class ADS(models.Model):
     id = models.AutoField(primary_key=True)
-    ads = models.ForeignKey(User, on_delete=models.CASCADE)
+    ads = models.ForeignKey(LibraryUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.CharField(max_length=750)
     date_pub = models.DateTimeField('Date published')

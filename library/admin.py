@@ -1,8 +1,17 @@
 from django.contrib import admin
 from .models import *
+from django.contrib.auth.admin import UserAdmin
+
+
+class LibraryUserAdmin(UserAdmin):
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'is_staff',
+        'id', 'authority'
+    )
+
 
 admin.site.register(Book)
-admin.site.register(User)
+admin.site.register(LibraryUser, LibraryUserAdmin)
 admin.site.register(Paper)
 admin.site.register(Genre)
 admin.site.register(GenreList)
