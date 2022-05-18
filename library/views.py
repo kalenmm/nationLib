@@ -1,4 +1,7 @@
+from django.http import response
 from django.shortcuts import render
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 
 
 def IndexView(request):
@@ -12,6 +15,6 @@ def LoginView(request):
 
 
 def RegisterView(request):
-    template_name = "library/register.html"
-    return render(request, template_name)
+    template_name = 'library/register.html'
+    return render(response, template_name)
 
