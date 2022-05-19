@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+name - {{book.name}}
+book_img - <img src="{{media_url}}{{book.book_img}}">
+publishing_house - {{book.publishing_house}}
+book_country - {{book.book_country}}
+book_description - {{book.book_description}}
+year - {{book.year}}
+ISBN - {{book.ISBN}}
+Author - {{author.author_id.first_name}} {{author.author_id.last_name}}
+pdf = <a href="{{media_url}}{{ pdf.book_pdf }}"> pdf
+</a>
+жанры =
+{% for genre in genres %}
+    <h2>{{genre.genre_id.name}}</h2>
+{% endfor %}
+страницы =
+{% for page in pages %}
+    <h2>{{page.paper_count}}</h2>
+{% endfor %}
+коменты =
+{% for comment in comments %}
+    <h2>{{commentюuser_id.username}}</h2>
+    <h2>{{comment.text}}</h2>
+{% endfor %}
+</body>
+</html>

@@ -1,9 +1,13 @@
 from django.urls import path
-from . import views
+from .views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
-app_name = 'library'
 urlpatterns = [
-    path('', views.IndexView, name='index'),
-    path('login/', views.LoginView, name='login'),
-    path('register/', views.RegisterView, name='register'),
+    path('', IndexView, name='index'),
+    path('login/', LoginView, name='login'),
+    path('register/', RegisterView, name='register'),
+    path('search/', search, name='search'),
+    path('search/<str:search_type>/<str:text>', search_success, name='search_success'),
+    path('book/<int:ids>/', book_page, name='book_page'),
 ]

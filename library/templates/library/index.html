@@ -5,10 +5,28 @@
     <title>Index</title>
 </head>
 <body>
+    {% load static %}
+<form class="" action="{%url 'search' %}" method="post" >
+    {% csrf_token %}
+    <input id="search_field"  type="text" name="search_field" value="" method='POST' placeholder="Search course" required>
+        <input type="radio" id="contactChoice1"
+     name="type" value="by_name">
+    <label for="contactChoice1">by name</label>
+    <input type="radio" id="contactChoice2"
+     name="type" value="by_author">
+    <label for="contactChoice2">by author</label>
+    <input type="radio" id="contactChoice3"
+     name="type" value="by_country">
+    <label for="contactChoice4">by country</label>
+    <input type="radio" id="contactChoice3"
+     name="type" value="by_publisher">
+    <label for="contactChoice4">by publisher</label>
+    <button type="submit" >Find</button>
+</form>
 <h1>Новые книги</h1>
 {% for book in latest_books %}
-    <h2 href="book/{{book.pk}}">{{book.name}}</h2>
-    <img src="{{book.book_img}}" href="book/{{book.pk}}">
+    <a href="book/{{book.pk}}">{{book.name}}</a>
+    <img src="{{media_url}}{{book.book_img}}" href="book/{{book.pk}}">
 {% endfor %}
 <h1>Жанры</h1>
 {% for genre in genres %}
@@ -23,8 +41,8 @@
 {% if user.is_authenticated%}
     <h1>Последник книги</h1>
     {% for last in lasts %}
-    <h2 href="book/{{last.paper_id.ISBN.pk}}">{{last.paper_id.ISBN.name}}</h2>
-    <img src="{{last.paper_id.ISBN.book_img}}" href="book/{{last.paper_id.ISBN.pk}}">
+    <a href="book/{{last.paper_id.ISBN.pk}}">{{last.paper_id.ISBN.name}}</a>
+    <img src="{{media_url}}{{last.paper_id.ISBN.book_img}}" href="book/{{last.paper_id.ISBN.pk}}">
 {% endfor %}
 {%else%}
 <h1>Авторы</h1>
@@ -35,8 +53,8 @@
 {%endif%}
 <h1>Популярные книги</h1>
 {% for chec in check %}
-    <h2 href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</h2>
-    <img src="{{chec.ISBN.book_img}}" href="book/{{chec.ISBN.pk}}">
+    <a href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</a>
+    <img src="{{media_url}}{{chec.ISBN.book_img}}" href="book/{{chec.ISBN.pk}}">
 {% endfor %}
 </body>
 

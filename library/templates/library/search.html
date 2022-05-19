@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if search_type%}
+    поиск по {{search_type}}
+    {% for book in search_res %}
+    <h2 href="book/{{book.pk}}">{{book.name}}</h2>
+    <img src="{{book.book_img}}" href="book/{{book.pk}}">
+{% endfor %}
+{% else %}
+    Ничего не найдено
+{%endif%}
+</body>
+</html>
