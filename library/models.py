@@ -9,7 +9,7 @@ class Book(models.Model):
     book_country = models.CharField(max_length=200, null=True)
     book_description = models.CharField(max_length=1000, null=True)
     name = models.CharField(max_length=200)
-    year = models.DateTimeField('Date published')
+    year = models.DateTimeField('Date published', null=True)
 
 
 class BookPDF(models.Model):
@@ -19,8 +19,12 @@ class BookPDF(models.Model):
 
 
 class User(AbstractUser):
-    id = models.AutoField(primary_key=True)
-    authority = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.username
+
+    def get_name(self):
+        return self.username
 
 
 class Paper(models.Model):
@@ -66,7 +70,6 @@ class Author(models.Model):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    date_of_birth = models.DateTimeField('Date of birth')
 
 
 class AB(models.Model):
@@ -93,5 +96,4 @@ class ADS(models.Model):
     id = models.AutoField(primary_key=True)
     ads = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    text = models.CharField(max_length=750)
-    date_pub = models.DateTimeField('Date published')
+    date_pub = models.DateTimeField(auto_now_add=True, blank=True)

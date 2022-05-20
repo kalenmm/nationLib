@@ -121,5 +121,7 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+LOGIN_REDIRECT_URL = '/library/'
+LOGOUT_REDIRECT_URL = '/library/'
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'library.User'

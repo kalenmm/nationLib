@@ -1,12 +1,12 @@
-from django.http import response
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 
+from django.shortcuts import render, redirect
+from django.views.generic import CreateView
 from nationLib import settings
 from .models import *
+from .forms import *
 from django.db.models import Sum, Value
 from django.db.models.functions import Concat
+from django.urls import reverse_lazy
 
 def IndexView(request):
     template_name = "library/index.html"
@@ -14,7 +14,9 @@ def IndexView(request):
     genres = Genre.objects.order_by('pk')
     populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:2][::-1]
     authors = []
-    last = LastPage.objects.order_by('pk')
+    last = []
+    if request.user.is_authenticated:
+        last = LastPage.objects.filter(user_id=request.user.pk).order_by('pk')
     news = ADS.objects.order_by('pk')
     for popular in populars:
         author = AB.objects.filter(ISBN=popular.ISBN.ISBN)
@@ -23,14 +25,10 @@ def IndexView(request):
                   {"latest_books": latest_books, "genres": genres, 'check': populars, "authors": authors, "lasts": last, "news": news, 'media_url':settings.MEDIA_URL})
 
 
-def LoginView(request):
-    template_name = "library/login.html"
-    return render(request, template_name)
-
-
-def RegisterView(request):
+class registerView(CreateView):
+    form_class = UserForm
+    success_url = reverse_lazy('login')
     template_name = 'library/register.html'
-    return render(request, template_name)
 
 
 def search(request):
@@ -71,3 +69,54 @@ def book_page(request, ids):
     pdf = BookPDF.objects.filter(book_content__pk=ids)[0]
     return render(request, "library/book_page.html",
                   {"book": book, "author": author, "comments": comments, "pages": pages, "genres": genres, "pdf": pdf, 'media_url':settings.MEDIA_URL})
+
+
+def add_genre(request):
+    if request.method == 'POST' and len(request.POST.get("name")) > 0:
+        genre = Genre(name=request.POST.get("name"))
+        genre.save()
+    return redirect("index")
+
+
+def delete_genre(request):
+    if request.method == 'POST' and request.user.is_staff:
+        Genre.objects.filter(pk=request.POST.get("id")).delete()
+    return redirect("index")
+
+
+def crete_news(request):
+    if request.method == 'POST' and request.user.is_staff:
+        text = request.POST.get("news")
+        user = request.user
+        ADS(ads=user, title=text).save()
+    return redirect("index")
+
+
+def delete_new(request):
+    if request.method == 'POST' and request.user.is_staff:
+        ADS.objects.filter(pk=request.POST.get("id")).delete()
+    return redirect("index")
+
+
+def create_book(request):
+    if request.method == 'POST' and request.user.is_staff:
+        book = Book(name="New")
+        book.save()
+        book = Book.objects.order_by("pk")[:2][::-1][0]
+        print(book.pk)
+        print(book.name)
+        return redirect("update_book", id=id)
+    else:
+        return redirect("index")
+
+
+def redact_Book(request, ids):
+    book = Book.objects.filter(pk=ids)[0]
+    authors = Author.objects.order_by("pk")
+    genres = GenreList.objects.filter(ISBN__pk=ids).order_by('genre_id__name')
+    return render(request, "library/update_book.html",
+                  {"book": book, "authors": authors, "genres": genres})
+
+
+def profile(request):
+    return redirect("index")

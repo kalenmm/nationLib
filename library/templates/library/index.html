@@ -3,27 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous">
+    <style type="text/css">
+        .wrap{
+  margin-top: -35px;
+  position: absolute;
+  left: 42%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background: #F4F0F0;;
+  line-height: 32px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: all 0.5s ease;
+}
+
+.input{
+  border: 0;
+  background: transparent;
+  width: 0%;
+  outline: none;
+  font-family: sans-serif;
+  font-size: 18px;
+  color: black;
+  font-style: italic;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.wrap .fa{
+  color: #fff;
+  position: absolute;
+  right: 17px;
+  top: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.wrap.active{
+  width: 250px;
+  padding-left: 25px;
+  transition: all 0.5s ease;
+}
+
+.input.active{
+  width: 80%;
+  padding-left: 5px;
+  transition: all 0.5s 0.8s ease;
+}
+
+input::placeholder {
+  color: black;
+  opacity: 50%;
+}
+
+.searchCriteries{
+display: none;
+}
+
+.searchCriteries.active{
+display: inline;
+background-color:#F4F0F0;
+margin-right:5px;
+color: black;
+padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+
+
+
+        body{
+        margin: 0px;
+        padding: 0px;
+        }
+
+        #logo{
+        font-size: 32px;
+        display: inline;
+        }
+
+        #header{
+        background-color: #67ACED;
+        width: 100%;
+        margin-bottom: 5px;
+        }
+
+        li {
+            list-style-type: none;
+            display: inline;
+        }
+
+        ul {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        a{
+        text-decoration: none;
+        color:black;
+        }
+
+        .books{
+        background-color: #F4F0F0;
+        width:100%;
+        height:200px;
+        }
+
+        footer{
+        width: 100%;
+        height: 50px;
+        padding-top:10px;
+        background-color: #F4F0F0;
+        }
+
+        #theme{
+        padding-left:10%;
+        }
+
+        #darkTheme{
+        background-color: black;
+        color:white;
+        }
+
+        #whiteTheme{
+        background-color: white;
+        color:black;
+        }
+    </style>
 </head>
 <body>
-    {% load static %}
+<div id="header">
+    <ul>
+        <li><p id="logo" style="margin-left: 5%">NationalLib</p></li>
+        <li><a href="#" style="margin-left: 10%">Каталог</a></li>
+        <li><a href="#" style="margin-left: 25%">Язык</a></li>
+        <li><a href="#" style="margin-left: 5%">....</a></li>
+        <li style="margin-left: 15%">
+        {% if user.is_authenticated%}
+            <li><a href="{% url 'profile' %}">Профиль</a></li>|<a href="{% url 'logout' %}"> Выход</a>
+        {%else%}
+            <li><a href="{% url 'login' %}">Вход</a></li>|<a href="{% url 'registration' %}"> Регистрация</a></li>
+        {% endif %}
+    </ul>
 <form class="" action="{%url 'search' %}" method="post" >
-    {% csrf_token %}
-    <input id="search_field"  type="text" name="search_field" value="" method='POST' placeholder="Search course" required>
-        <input type="radio" id="contactChoice1"
-     name="type" value="by_name">
-    <label for="contactChoice1">by name</label>
-    <input type="radio" id="contactChoice2"
-     name="type" value="by_author">
-    <label for="contactChoice2">by author</label>
-    <input type="radio" id="contactChoice3"
-     name="type" value="by_country">
-    <label for="contactChoice4">by country</label>
-    <input type="radio" id="contactChoice3"
-     name="type" value="by_publisher">
-    <label for="contactChoice4">by publisher</label>
-    <button type="submit" >Find</button>
+            <div class="wrap">
+                <input type="text" class="input" name="search_field" value="" method='POST'
+                       placeholder="Search course" required>
+                <i style="display:inline;" class="fas fa-search" aria-hidden="true"></i>
+                <div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_name" id="contactChoice1">Книга</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_author" id="contactChoice2">Автор</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_country" id="contactChoice3" checked>Страна</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_publisher" id="contactChoice4" checked>Издатель</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_fulltext" checked>Текст</p>
+                    </div>
+            </div>
+
+        </div>
+            {% csrf_token %}
+    </form>
+
+</div>
+    {%if user.is_staff%}
+<form action="{%url 'add_genre' %}"  method="post">
+{% csrf_token %}
+<input id="name"  type="text" name="name" value="" method='POST' placeholder="name of genre" required>
+    <button type="submit" >add</button>
 </form>
+    {% endif %}
 <h1>Новые книги</h1>
+        {%if user.is_staff%}
+            <form action="{%url 'create_book' %}" method="post">
+            {% csrf_token %}
+                <button type="submit" >add</button>
+            </form>
+    {% endif %}
 {% for book in latest_books %}
     <a href="book/{{book.pk}}">{{book.name}}</a>
     <img src="{{media_url}}{{book.book_img}}" href="book/{{book.pk}}">
@@ -31,13 +205,34 @@
 <h1>Жанры</h1>
 {% for genre in genres %}
     <h2>{{genre.name}}</h2>
+        {%if user.is_staff%}
+    <form action="{%url 'delete_genre' %}"  method="post">
+        {% csrf_token %}
+        <input type="text" name="id" value="{{genre.pk}}" method='POST' style="display: none">
+        <button type="submit" >delete</button>
+    </form>
+        {% endif %}
 {% endfor %}
 <h1>Новости</h1>
 {% for new in news %}
     <h2>{{new.title}}</h2>
-    <h2>{{new.text}}</h2>
+    <h2>{{new.ads.username}}</h2>
     <h2>{{new.date_pub}}</h2>
+        {%if user.is_staff%}
+    <form action="{%url 'delete_new' %}"  method="post">
+        {% csrf_token %}
+        <input type="text" name="id" value="{{new.pk}}" method='POST' style="display: none">
+        <button type="submit" >delete news</button>
+    </form>
+        {% endif %}
 {% endfor %}
+        {%if user.is_staff%}
+    <form action="{%url 'crete_news' %}"  method="post">
+        {% csrf_token %}
+       <input id="news"  type="text" name="news" value="" method='POST' required>
+        <button type="submit" >Add news</button>
+    </form>
+        {% endif %}
 {% if user.is_authenticated%}
     <h1>Последник книги</h1>
     {% for last in lasts %}
@@ -56,6 +251,22 @@
     <a href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</a>
     <img src="{{media_url}}{{chec.ISBN.book_img}}" href="book/{{chec.ISBN.pk}}">
 {% endfor %}
-</body>
+<footer>
+    <p id="theme">Тема
+    <button id="darkTheme">T</button>
+    <button id="whiteTheme">T</button>
+    </p>
+</footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script>
+    $(document).ready(function(){
 
+  $(".fa-search").click(function(){
+    $(".wrap, .input, .searchCriteries").toggleClass("active");
+    $("input[class='input']").focus();
+  });
+
+});
+</script>
+</body>
 </html>
