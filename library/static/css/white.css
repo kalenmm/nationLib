@@ -1,0 +1,83 @@
+.wrap{
+  background: #F4F0F0;
+}
+
+.input{
+  color: black;
+}
+
+.wrap .fa{
+  color: #fff;
+}
+
+input::placeholder {
+  color: black;
+}
+
+.searchCriteries.active{
+background-color:#F4F0F0;
+color: black;
+}
+
+
+
+
+
+        body{
+        background-color:white;
+        }
+
+        #header{
+        background-color: #67ACED;
+        }
+
+        a{
+        color:black;
+        }
+
+        .books{
+        background-color: #F4F0F0;
+        }
+
+        #main{
+        color: black;
+        }
+
+        .bookLine{
+        background-color:#F4F0F0;
+        }
+
+        .bookTemplate{
+        background-color: white;
+        }
+
+
+        .newsBlock{
+        background-color: #F4F0F0;
+        }
+
+        .news{
+        background-color: white;
+        }
+
+        .genreBlock{
+        background-color: #F4F0F0;
+        }
+
+        .genre__template{
+        background-color: #C4C4C4;
+        }
+
+        footer{
+        background-color: #F4F0F0;
+        }
+
+        #darkTheme{
+        background-color: black;
+        color:white;
+        }
+
+        #whiteTheme{
+        background-color: white;
+        color:black;
+        }

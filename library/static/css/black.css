@@ -1,0 +1,91 @@
+.wrap{
+  background: black;
+}
+
+.input{
+  color: white;
+}
+
+.wrap .fa{
+  color: #232323;
+}
+
+input::placeholder {
+  color: white;
+}
+
+.searchCriteries.active{
+background-color:#232323;
+color: white;
+}
+
+
+
+        input{
+                background: black;
+                color:white;
+        }
+
+        textarea{
+                background: black;
+                color:white;
+        }
+
+        body{
+        background-color:black;
+        color:white;
+        }
+
+        #header{
+        background-color: #232323;
+        }
+
+        a{
+        color:white;
+        }
+
+        #main{
+        color: white;
+        }
+
+        .bookLine{
+        background-color:#232323;
+        }
+
+        .books{
+        background-color: #232323;
+        }
+
+        .newsBlock{
+        background-color: #232323;
+        }
+
+        .news{
+        background-color: black;
+        }
+
+        .genreBlock{
+        background-color: #232323;
+        }
+
+        .genre__template{
+        background-color: black;
+        }
+
+        footer{
+        background-color: #232323;
+        }
+
+        #themeText{
+        color:white;
+        }
+
+        #darkTheme{
+        background-color: black;
+        color:white;
+        }
+
+        #whiteTheme{
+        background-color: white;
+        color:black;
+        }

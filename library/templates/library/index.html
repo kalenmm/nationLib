@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,149 +7,17 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
           integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
           crossorigin="anonymous">
-    <style type="text/css">
-        .wrap{
-  margin-top: -35px;
-  position: absolute;
-  left: 42%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  background: #F4F0F0;;
-  line-height: 32px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  transition: all 0.5s ease;
-}
-
-.input{
-  border: 0;
-  background: transparent;
-  width: 0%;
-  outline: none;
-  font-family: sans-serif;
-  font-size: 18px;
-  color: black;
-  font-style: italic;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.wrap .fa{
-  color: #fff;
-  position: absolute;
-  right: 17px;
-  top: 15px;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.wrap.active{
-  width: 250px;
-  padding-left: 25px;
-  transition: all 0.5s ease;
-}
-
-.input.active{
-  width: 80%;
-  padding-left: 5px;
-  transition: all 0.5s 0.8s ease;
-}
-
-input::placeholder {
-  color: black;
-  opacity: 50%;
-}
-
-.searchCriteries{
-display: none;
-}
-
-.searchCriteries.active{
-display: inline;
-background-color:#F4F0F0;
-margin-right:5px;
-color: black;
-padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-
-
-
-
-        body{
-        margin: 0px;
-        padding: 0px;
-        }
-
-        #logo{
-        font-size: 32px;
-        display: inline;
-        }
-
-        #header{
-        background-color: #67ACED;
-        width: 100%;
-        margin-bottom: 5px;
-        }
-
-        li {
-            list-style-type: none;
-            display: inline;
-        }
-
-        ul {
-            margin-left: 0;
-            padding-left: 0;
-        }
-
-        a{
-        text-decoration: none;
-        color:black;
-        }
-
-        .books{
-        background-color: #F4F0F0;
-        width:100%;
-        height:200px;
-        }
-
-        footer{
-        width: 100%;
-        height: 50px;
-        padding-top:10px;
-        background-color: #F4F0F0;
-        }
-
-        #theme{
-        padding-left:10%;
-        }
-
-        #darkTheme{
-        background-color: black;
-        color:white;
-        }
-
-        #whiteTheme{
-        background-color: white;
-        color:black;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/black.css'%}" type="text/css" class="theme">
 </head>
 <body>
-<div id="header">
-    <ul>
-        <li><p id="logo" style="margin-left: 5%">NationalLib</p></li>
-        <li><a href="#" style="margin-left: 10%">Каталог</a></li>
-        <li><a href="#" style="margin-left: 25%">Язык</a></li>
-        <li><a href="#" style="margin-left: 5%">....</a></li>
-        <li style="margin-left: 15%">
+    <div id="header">
+        <p id="logo" style="margin-left: 5%">NationalLib</p>
+    <ul style="font-size: 22px">
         {% if user.is_authenticated%}
-            <li><a href="{% url 'profile' %}">Профиль</a></li>|<a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Профиль</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
-            <li><a href="{% url 'login' %}">Вход</a></li>|<a href="{% url 'registration' %}"> Регистрация</a></li>
+            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
     </ul>
 <form class="" action="{%url 'search' %}" method="post" >
@@ -184,89 +53,143 @@ padding: 5px;
     </form>
 
 </div>
-    {%if user.is_staff%}
-<form action="{%url 'add_genre' %}"  method="post">
-{% csrf_token %}
-<input id="name"  type="text" name="name" value="" method='POST' placeholder="name of genre" required>
-    <button type="submit" >add</button>
-</form>
-    {% endif %}
-<h1>Новые книги</h1>
-        {%if user.is_staff%}
-            <form action="{%url 'create_book' %}" method="post">
-            {% csrf_token %}
-                <button type="submit" >add</button>
-            </form>
-    {% endif %}
-{% for book in latest_books %}
-    <a href="book/{{book.pk}}">{{book.name}}</a>
-    <img src="{{media_url}}{{book.book_img}}" href="book/{{book.pk}}">
-{% endfor %}
-<h1>Жанры</h1>
-{% for genre in genres %}
-    <h2>{{genre.name}}</h2>
-        {%if user.is_staff%}
-    <form action="{%url 'delete_genre' %}"  method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{genre.pk}}" method='POST' style="display: none">
-        <button type="submit" >delete</button>
+    <div id="main">
+        <h1>Новые книги</h1>
+            <div class="bookLine">
+
+                    {% for book in latest_books %}
+                    <div class="bookTemplate">
+                        <div class="bookPic" href="book/{{book.pk}}" style="background-image: url('{{media_url}}{{book.book_img}}');
+                            background-size: cover;
+                            background-position: center center;">
+                        </div>
+                        <p class="bookName"><a href="book/{{book.pk}}">{{book.name}}</a></p>
+                    </div>
+                    {% endfor %}
+                    <div class="bookTemplate">
+                        <div class="bookPic";>
+                            {%if user.is_staff%}
+                            <form style="width: 100%; height: 100%;" action="{%url 'create_book' %}" method="post">
+                                {% csrf_token %}
+                                <button style="width: 100%; height: 100%; font-size: 64px; border-radius: 20px 20px 0px 0px;" type="submit" >+</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    <p class="bookName">Добавить книгу</p>
+                    </div>
+            </div>
+
+
+
+            <div class="container">
+                <div class="newsBlock">
+                    <h1 class="menuName">Новости</h1>
+                        <div class="news">
+
+                    {% for new in news %}
+                            <div class="news__template">
+                                <div style="display: flex;
+                                        justify-content: space-between;">
+                                    <div style="word-wrap: break-word;" class="news__template__message">
+                                        {{new.title}}
+                                    </div>
+                                    <div>
+                                        {%if user.is_staff%}
+                        <form action="{%url 'delete_new' %}"  method="post">
+                            {% csrf_token %}
+                            <input type="text" name="id" value="{{new.pk}}" method='POST' style="display: none">
+                            <button type="submit" style="border-radius: 5px; font-size: 12px">delete new</button>
+                        </form>
+                            {% endif %}
+                                    </div>
+                                </div>
+                                <div class="news__template__info">
+                                    <div class="news__template__info__author">{{new.ads.username}}</div>
+                                    <div class="news__template__info__date">{{new.date_pub}}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                            <div style="width: 75%">
+                                {%if user.is_staff%}
+                                    <form style="padding: 20px;" action="{%url 'crete_news' %}"  method="post">
+                                        {% csrf_token %}
+                                        <textarea maxlength="200" style=" width:100%; padding: 5px;" id="news"
+                                                  type="text" name="news"
+                                                  value="" method='POST'
+                                                  required></textarea>
+                                        <div>
+                                        <button type="submit" >Add news</button>
+                                            </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                <div class="genreBlock">
+                    <h1 class="menuName">Жанры</h1>
+                    <div class="genres">
+                <div class="tags">
+
+                    {% for genre in genres %}
+
+                    <div class="genre__template">
+                        <label class="genre__name"><a href="#">{{genre.name}}</a></label>
+                    </div>
+                {%if user.is_staff%}
+                    <form action="{%url 'delete_genre' %}"  method="post">
+                    {% csrf_token %}
+                    <div id="addGenre">
+                        <input type="text" name="id" value="{{genre.pk}}" method='POST' style="display: none">
+                    </div>
+                        <div>
+        <button type="submit" style="border-radius: 50px">x</button>
+                        </div>
+
     </form>
-        {% endif %}
-{% endfor %}
-<h1>Новости</h1>
-{% for new in news %}
-    <h2>{{new.title}}</h2>
-    <h2>{{new.ads.username}}</h2>
-    <h2>{{new.date_pub}}</h2>
-        {%if user.is_staff%}
-    <form action="{%url 'delete_new' %}"  method="post">
+                    {%endif%}
+                    {% endfor %}
+
+
+                {%if user.is_staff%}
+    <form action="{%url 'add_genre' %}"  method="post">
         {% csrf_token %}
-        <input type="text" name="id" value="{{new.pk}}" method='POST' style="display: none">
-        <button type="submit" >delete news</button>
-    </form>
+                <div style="margin: 5px;">
+                    <input style="padding: 5px; border-radius: 5px;" placeholder="Добавить жанр" id="name"
+                           type="text" name="name" value="" method='POST' required>
+                    </div>
+                </form>
         {% endif %}
-{% endfor %}
-        {%if user.is_staff%}
-    <form action="{%url 'crete_news' %}"  method="post">
-        {% csrf_token %}
-       <input id="news"  type="text" name="news" value="" method='POST' required>
-        <button type="submit" >Add news</button>
-    </form>
-        {% endif %}
-{% if user.is_authenticated%}
-    <h1>Последник книги</h1>
-    {% for last in lasts %}
-    <a href="book/{{last.paper_id.ISBN.pk}}">{{last.paper_id.ISBN.name}}</a>
-    <img src="{{media_url}}{{last.paper_id.ISBN.book_img}}" href="book/{{last.paper_id.ISBN.pk}}">
-{% endfor %}
-{%else%}
-<h1>Авторы</h1>
-{% for author in authors %}
-    <h2>{{author.first_name}}</h2>
-    <h2>{{author.last_name}}</h2>
-{% endfor %}
-{%endif%}
+
+                    </div>
+            </div>
+                    </div>
+            </div>
 <h1>Популярные книги</h1>
-{% for chec in check %}
-    <a href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</a>
-    <img src="{{media_url}}{{chec.ISBN.book_img}}" href="book/{{chec.ISBN.pk}}">
-{% endfor %}
+    <div class="bookLine">
+        {% for chec in check %}
+                    <div class="bookTemplate">
+                        <div class="bookPic" style="background-image: url('{{media_url}}{{chec.ISBN.book_img}}');
+                            background-size: cover;
+                            background-position: center center;"
+                            href="book/{{chec.ISBN.pk}}">
+                        </div>
+                        <p class="bookName"><a href="book/{{chec.ISBN.pk}}">{{chec.ISBN.name}}</a></p>
+                    </div>
+                    {% endfor %}
+            </div>
+    </div>
 <footer>
-    <p id="theme">Тема
+    <p id="themeText">Тема
     <button id="darkTheme">T</button>
     <button id="whiteTheme">T</button>
     </p>
 </footer>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-<script>
-    $(document).ready(function(){
+<script src="{% static 'js/lib.js'%}"></script>
 
-  $(".fa-search").click(function(){
-    $(".wrap, .input, .searchCriteries").toggleClass("active");
-    $("input[class='input']").focus();
-  });
-
-});
-</script>
 </body>
 </html>

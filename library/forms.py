@@ -10,8 +10,7 @@ class UserForm(UserCreationForm):
         fields = ('email', 'username', 'first_name', 'last_name')
 
 
-class UserChangeForm(UserChangeForm):
-
-    class Meta(UserChangeForm.Meta):
-        model = User
-        fields = ('first_name', 'last_name', 'password')
+class BookForm(forms.ModelForm):
+    class Meta(UserCreationForm.Meta):
+        model = Book
+        fields = ('name', 'book_country', 'book_description', 'publishing_house', 'author_name', 'book_img')

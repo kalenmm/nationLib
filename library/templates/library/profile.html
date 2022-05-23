@@ -5,6 +5,74 @@
     <title>Title</title>
 </head>
 <body>
-
+{{ user.username }}
+<h1>Все книги</h1>
+{% for book in books %}
+    {% for object in book %}
+        {% if forloop.counter == 1 %}
+            <a href="book/{{object.ISBN.pk}}">{{object.ISBN.name}}</a>
+            <img src="{{media_url}}{{object.ISBN.book_img}}" href="book/{{object.ISBN.pk}}">
+        {% endif %}
+        {% if forloop.counter == 2 and object != 0%}
+            <a href="/library/paper_page/{{object.paper_id.pk}}">Последная прочитаная страница {{object.paper_id.paper_count}}</a>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<h1>Читаю</h1>
+{% for book in books %}
+    {% for object in book %}
+        {% if forloop.counter == 1 and object.type == "Читаю"%}
+            {% if forloop.counter == 1 %}
+                <a href="book/{{object.ISBN.pk}}">{{object.ISBN.name}}</a>
+                <img src="{{media_url}}{{object.ISBN.book_img}}" href="book/{{object.ISBN.pk}}">
+            {% endif %}
+            {% if forloop.counter == 2 and object != 0%}
+                <a href="/library/paper_page/{{object.paper_id.pk}}">Последная прочитаная страница {{object.paper_id.paper_count}}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<h1>В планах</h1>
+{% for book in books %}
+    {% for object in book %}
+        {% if forloop.counter == 1 and object.type == "В планах"%}
+            {% if forloop.counter == 1 %}
+                <a href="book/{{object.ISBN.pk}}">{{object.ISBN.name}}</a>
+                <img src="{{media_url}}{{object.ISBN.book_img}}" href="book/{{object.ISBN.pk}}">
+            {% endif %}
+            {% if forloop.counter == 2 and object != 0%}
+                <a href="/library/paper_page/{{object.paper_id.pk}}">Последная прочитаная страница {{object.paper_id.paper_count}}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<h1>Прочитано </h1>
+{% for book in books %}
+    {% for object in book %}
+        {% if forloop.counter == 1 and object.type == "Прочитано"%}
+            {% if forloop.counter == 1 %}
+                <a href="book/{{object.ISBN.pk}}">{{object.ISBN.name}}</a>
+                <img src="{{media_url}}{{object.ISBN.book_img}}" href="book/{{object.ISBN.pk}}">
+            {% endif %}
+            {% if forloop.counter == 2 and object != 0%}
+                <a href="/library/paper_page/{{object.paper_id.pk}}">Последная прочитаная страница {{object.paper_id.paper_count}}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<h1>Любимое</h1>
+{% for book in books %}
+    {% for object in book %}
+        {% if forloop.counter == 1 and object.type == "Любимое"%}
+            {% if forloop.counter == 1 %}
+                <a href="book/{{object.ISBN.pk}}">{{object.ISBN.name}}</a>
+                <img src="{{media_url}}{{object.ISBN.book_img}}" href="book/{{object.ISBN.pk}}">
+            {% endif %}
+            {% if forloop.counter == 2 and object != 0%}
+                <a href="/library/paper_page/{{object.paper_id.pk}}">Последная прочитаная страница {{object.paper_id.paper_count}}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
 </body>
 </html>

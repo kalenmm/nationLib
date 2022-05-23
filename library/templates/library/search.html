@@ -1,18 +1,85 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/white.css'%}" type="text/css" id="theme">
 </head>
 <body>
+<div id="header">
+        <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
+    <ul style="font-size: 22px">
+        {% if user.is_authenticated%}
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Профиль</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+        {%else%}
+            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
+        {% endif %}
+    </ul>
+<form class="" action="{%url 'search' %}" method="post" >
+            <div class="wrap">
+                <input type="text" class="input" name="search_field" value="" method='POST'
+                       placeholder="Search course" required>
+                <i style="display:inline;" class="fas fa-search" aria-hidden="true"></i>
+                <div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_name" id="contactChoice1">Книга</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_author" id="contactChoice2">Автор</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_country" id="contactChoice3" checked>Страна</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_publisher" id="contactChoice4" checked>Издатель</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_fulltext" checked>Текст</p>
+                    </div>
+            </div>
+
+        </div>
+            {% csrf_token %}
+    </form>
+
+</div>
+<div class="main">
 {% if search_type%}
+    <p style="font-size: 24px;">
     поиск по {{search_type}}
-    {% for book in search_res %}
-    <h2 href="book/{{book.pk}}">{{book.name}}</h2>
-    <img src="{{book.book_img}}" href="book/{{book.pk}}">
-{% endfor %}
+        </p>
+        <div class="searchedBooks">
+            {% for book in search_res %}
+                <div class="bookTemplate">
+                    <div class="bookPic" href="book/{{book.pk}}" style="background-image: url('{{media_url}}{{book.book_img}}');
+                            background-size: cover;
+                            background-position: center center;">
+                    </div>
+                    <p class="bookName"><a href="/library/book/{{book.pk}}">{{book.name}}</a></p>
+                </div>
+            {% endfor %}
+        </div>
 {% else %}
     Ничего не найдено
 {%endif%}
+    </div>
+<footer>
+    <p id="themeText">Тема
+    <button id="darkTheme">T</button>
+    <button id="whiteTheme">T</button>
+    </p>
+</footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="{% static 'js/lib.js'%}"></script>
 </body>
 </html>

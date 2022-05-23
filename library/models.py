@@ -1,14 +1,22 @@
-from django.db import models
+from django.db import models, migrations
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.operations import TrigramExtension
+
+
+class Migration(migrations.Migration):
+    operations = [
+        TrigramExtension(),
+    ]
 
 
 class Book(models.Model):
-    ISBN = models.IntegerField(primary_key=True)
+    ISBN = models.AutoField(primary_key=True)
     book_img = models.ImageField(upload_to='book_img', null=True)
     publishing_house = models.CharField(max_length=200, null=True)
     book_country = models.CharField(max_length=200, null=True)
     book_description = models.CharField(max_length=1000, null=True)
     name = models.CharField(max_length=200)
+    author_name = models.CharField(max_length=200, null=True)
     year = models.DateTimeField('Date published', null=True)
 
 
@@ -64,18 +72,6 @@ class Bookmarks(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
-
-
-class Author(models.Model):
-    id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-
-
-class AB(models.Model):
-    id = models.AutoField(primary_key=True)
-    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
-    author_id = models.ForeignKey(Author, on_delete=models.CASCADE)
 
 
 class LastPage(models.Model):
