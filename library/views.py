@@ -4,9 +4,13 @@ from django.views.generic import CreateView
 from nationLib import settings
 from django.contrib.postgres.aggregates.general import StringAgg
 from .forms import *
-from django.db.models import Sum, Max, Avg, Count
+from django.db.models import Sum, Avg, Count
 from django.urls import reverse_lazy
 from django.db.models import Q
+from PyPDF2 import PdfWriter, PdfReader
+from django.core.files.base import ContentFile
+
+
 def IndexView(request):
     template_name = "library/index.html"
     count = 6
@@ -137,22 +141,6 @@ def delete_comment(request):
         Comments.objects.filter(pk=request.POST.get("comment")).delete()
     return redirect("book_page", ids=book.pk)
 
-
-def add_paper(request):
-    book = Book.objects.filter(pk=request.POST.get("id"))[0]
-    if request.method == 'POST' and request.user.is_staff:
-        page_number = Paper.objects.values("ISBN").annotate(max=Max('paper_count')).filter(ISBN=book)
-        if len(page_number) > 0:
-            page_number = page_number[0]['max'] + 1
-        else:
-            page_number = 1
-        paper = Paper(ISBN=book, paper_count=page_number)
-        paper.save()
-        return redirect("paper_page", ids=paper.pk)
-    else:
-        return redirect("book_page", ids=book.pk)
-
-
 def paper_page(request, ids):
     template_name = "library/paper.html"
     paper = Paper.objects.filter(pk=ids)[0]
@@ -173,26 +161,7 @@ def paper_page(request, ids):
     if len(next_page) > 0:
         next_page = next_page[0]
     return render(request, template_name,
-                  {"paper": paper, "all_papers": all_paper, "prev_page": prev_page, "next_page": next_page})
-
-
-def update_paper(request):
-    paper = Paper.objects.filter(pk=request.POST.get("id"))[0]
-    if request.method == 'POST' and request.user.is_authenticated:
-        text = request.POST.get("paper_text")
-        paper.text = text
-        paper.save()
-    return redirect("paper_page", ids=paper.pk)
-
-
-def delete_paper(request):
-    book = Book.objects.filter(pk=request.POST.get("id"))[0]
-    if request.method == 'POST' and request.user.is_staff:
-        paper = Paper.objects.values("ISBN").annotate(max=Max('paper_count')).filter(ISBN=book)
-        if len(paper) > 0:
-            paper = Paper.objects.filter(ISBN=book, paper_count=paper[0]['max'])
-            paper.delete()
-    return redirect("book_page", ids=book.pk)
+                  {"paper": paper, "all_papers": all_paper, "prev_page": prev_page, "next_page": next_page, 'media_url':settings.MEDIA_URL})
 
 
 def change_book_mark(request):
@@ -263,6 +232,7 @@ def update_book(request):
         year = request.POST.get("year")
         book_img = request.FILES[("book_img")]
         book_pdf = request.FILES[("book_pdf")]
+        divide_book(book_pdf, book)
         book.name = name
         book.book_country = book_country
         book.book_description = book_description
@@ -276,8 +246,8 @@ def update_book(request):
         if len(bookpdf) == 0:
             BookPDF(book_pdf=book_pdf, book_content=book).save()
         else:
-            bookpdf.book_pdf = book_pdf
-            bookpdf.save()
+            bookpdf[0].book_pdf = book_pdf
+            bookpdf[0].save()
     return redirect("book_page", ids=book.pk)
 
 
@@ -303,6 +273,21 @@ def profile(request):
         return redirect("index")
 
 
-def update_variable(value):
-    data = value
-    return data
+def divide_book(file, ISBN):
+    inputpdf = PdfReader(file)
+    for i in range(len(inputpdf.pages)):
+        output = PdfWriter()
+        output.addPage(inputpdf.pages[i])
+        name = file.name[0:-4]
+        name = name + str(i) + '.pdf'
+        with open('./media/paper_pdf/' + name, "wb") as outputStream:
+            output.write(outputStream)
+        f = open('./media/paper_pdf/' + name)
+        papers = Paper.objects.filter(paper_count=i + 1, ISBN=ISBN)
+        if len(papers) > 0:
+            papers[0].content = 'paper_pdf/' + name
+            papers[0].save()
+        else:
+            paper = Paper(content='paper_pdf/' + name, paper_count=i + 1, ISBN=ISBN)
+            paper.save()
+

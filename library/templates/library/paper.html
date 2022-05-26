@@ -83,28 +83,14 @@
     </div>
 </div>
 
-<div style=" width: 60%; margin-top: 20px; margin: auto;">
-    <div style="padding: 20px; font-size: 24px;">
-        <div style=" word-wrap: break-word;">
-
-        {{paper.text}}
-        </div>
-    </div>
-    {%if user.is_staff %}
-    <form action="{%url 'update_paper' %}" method="post">
-    {% csrf_token %}
-        <div style="background-color: #F4F0F0; border-radius: 20px; width: 100%; ">
-            <div style="margin: 20px;padding-top: 20px; padding-bottom: 20px;">
-            <input type="text" name="id" value="{{paper.pk}}" method='POST' style="display: none">
-        <textarea style="padding:5px;font-size: 20px;" maxlength="2200" cols="72"
-                  rows="4" name="paper_text" value="" method='POST' required></textarea>
-        <div>
-        <button type="submit"  style="font-size: 20px; border-radius: 5px">Переписать страницу</button>
-        </div>
+<div style=" width: 50%; margin-top: 20px; margin: auto;">
+    <div style="">
+        <div style=" word-wrap: break-word; background-color: red;">
+            <div style="margin: auto;">
+            <embed src="{{media_url}}{{paper.content}}#view=FitH" width="100%" height="1000px">
                 </div>
+        </div>
     </div>
-    </form>
-{% endif %}
 </div>
 
 

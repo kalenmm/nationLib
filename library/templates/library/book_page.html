@@ -139,6 +139,11 @@
     <button class="tablinks" onclick="openCity(event, 'bookComments')">Comments</button>
 </div>
 
+                    <form action="{%url 'delete_book' %}"  method="post">
+                        {% csrf_token %}
+                            <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                            <button type="submit" >Удалить</button>
+                    </form>
 <div id="bookView" class="tab-content">
     <div class="firstPart" style="width: 400px;">
         <div class="bookPicture" style="background-image: url('{{media_url}}{{book.book_img}}'); background-size: cover;
@@ -323,20 +328,6 @@
     </div>
     <div style="padding: 20px; width: 260px; ">
         <div>
-            {%if user.is_staff %}
-        <form action="{%url 'add_paper' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <button style="border-radius: 5px;" type="submit" >Добавить страницу</button>
-    </form>
-            </div>
-        <div style="margin-top: 20px;">
-    <form action="{%url 'delete_paper' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <button style="border-radius: 5px;" type="submit" >Удалить последнюю страницу</button>
-    </form>
-            {% endif %}
             </div>
     </div>
     </div>
@@ -356,20 +347,8 @@
 </div>
         </div>
     <hr>
-        <div class="type">
-            {%if user.is_authenticated %}
-    {%if book_mark %}
-        {% for mark in book_mark %}
-            {% if forloop.counter == 1 %}
-                <div style="text-align: center; padding: 10px; font-size: 32px;"><button style="background-color: #67ACED;
+        <div style="text-align: center; padding: 10px; font-size: 32px;"><button style="background-color: #67ACED;
                 border-radius: 10px; padding: 10px;" type="submit" >Обновить книгу</button></div>
-            {% endif %}
-        {% endfor %}
-    {%else%}
-        <h2>Добавить в список</h2>
-    {% endif %}
-{% endif %}
-        </div>
     </div>
 
     <div class="secondPart" style="width: 600px;">

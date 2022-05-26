@@ -37,7 +37,7 @@ class User(AbstractUser):
 
 class Paper(models.Model):
     id = models.AutoField(primary_key=True)
-    text = models.CharField(max_length=2200)
+    content = models.FileField(upload_to='paper_pdf')
     paper_count = models.IntegerField()
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE)
 
