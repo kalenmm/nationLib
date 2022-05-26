@@ -8,14 +8,14 @@
           integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
           crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/black.css'%}" type="text/css" class="theme">
+    <link rel="stylesheet" href="{% static 'css/white.css'%}" type="text/css" class="theme">
 </head>
 <body>
     <div id="header">
         <p id="logo" style="margin-left: 5%">NationalLib</p>
     <ul style="font-size: 22px">
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Профиль</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
             <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
@@ -66,17 +66,18 @@
                         <p class="bookName"><a href="book/{{book.pk}}">{{book.name}}</a></p>
                     </div>
                     {% endfor %}
+                            {%if user.is_staff%}
                     <div class="bookTemplate">
                         <div class="bookPic";>
-                            {%if user.is_staff%}
                             <form style="width: 100%; height: 100%;" action="{%url 'create_book' %}" method="post">
                                 {% csrf_token %}
                                 <button style="width: 100%; height: 100%; font-size: 64px; border-radius: 20px 20px 0px 0px;" type="submit" >+</button>
                             </form>
-                            {% endif %}
                         </div>
                     <p class="bookName">Добавить книгу</p>
                     </div>
+
+                            {% endif %}
             </div>
 
 

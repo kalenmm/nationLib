@@ -15,7 +15,7 @@
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
     <ul style="font-size: 22px">
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Профиль</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
             <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
@@ -56,7 +56,6 @@
 <div class="main">
 {% if search_type%}
     <p style="font-size: 24px;">
-    поиск по {{search_type}}
         </p>
         <div class="searchedBooks">
             {% for book in search_res %}
@@ -75,8 +74,8 @@
     </div>
 <footer>
     <p id="themeText">Тема
-    <button id="darkTheme">T</button>
-    <button id="whiteTheme">T</button>
+    <button id="darkTheme" disabled="disabled">T</button>
+    <button id="whiteTheme" disabled="disabled">T</button>
     </p>
 </footer>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>

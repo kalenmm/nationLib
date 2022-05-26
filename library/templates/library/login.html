@@ -1,17 +1,68 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/white.css'%}" type="text/css" id="theme">
 </head>
 <body>
-<main class="px-44">
-    <div class="container mt-12">
-        <h1 class="text-4xl font-bold text-blue-500">Login</h1>
-        <br>
-        <hr>
+<div id="header">
+        <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
+    <ul style="font-size: 22px">
+        {% if user.is_authenticated%}
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+        {%else%}
+            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'registration' %}"> Регистрация</a>
+        {% endif %}
+    </ul>
+<form class="" action="{%url 'search' %}" method="post" >
+            <div class="wrap">
+                <input type="text" class="input" name="search_field" value="" method='POST'
+                       placeholder="Search course" required>
+                <i style="display:inline;" class="fas fa-search" aria-hidden="true"></i>
+                <div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_name" id="contactChoice1">Книга</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_author" id="contactChoice2">Автор</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_country" id="contactChoice3" checked>Страна</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_publisher" id="contactChoice4" checked>Издатель</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_fulltext" checked>Текст</p>
+                    </div>
+            </div>
 
-        <div class="module my-4">
+        </div>
+            {% csrf_token %}
+    </form>
+
+</div>
+
+<div style="min-height:590px;">
+<main style="padding: 100px;" class="px-44">
+    <div class="container mt-12">
+    <div style="width: 400px; margin: auto;">
+    <div style="border-radius: 20px 20px 20px 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+    <div style="text-align: center; background-color: #67ACED; height: 75px; border-radius: 20px 20px 0px 0px; ">
+        <h1 style="padding: 20px;" class="text-4xl font-bold text-blue-500">Login</h1>
+</div>
+    <div style="padding: 20px; background-color: #F4F0F0; border-radius: 0px 0px 20px 20px;" class="module my-4">
             {% if form.errors %}
                 <p class="py-2 text-gray-700 font-medium">Your username and password didn't match. Please try again.</p>
             {% else %}
@@ -21,14 +72,21 @@
                 <form method="post">
                     {{ form.as_p }}
                     {% csrf_token %}
-                    <p><input type="submit" value="Login" class="text-white bg-blue-500 rounded-md px-4 py-2"></p>
+                    <p><input style="border-radius: 5px;" type="submit" value="Login" class="text-white bg-blue-500 rounded-md px-4 py-2"></p>
                 </form>
             </div>
         </div>
-
-        <br>
-        <hr>
+    </div>
+    </div>
     </div>
 </main>
+</div>
+
+<footer>
+    <p id="themeText">Тема
+    <button id="darkTheme" disabled="disabled">T</button>
+    <button id="whiteTheme" disabled="disabled">T</button>
+    </p>
+</footer>
 </body>
 </html>

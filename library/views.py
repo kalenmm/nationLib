@@ -6,13 +6,16 @@ from django.contrib.postgres.aggregates.general import StringAgg
 from .forms import *
 from django.db.models import Sum, Max, Avg, Count
 from django.urls import reverse_lazy
-
+from django.db.models import Q
 def IndexView(request):
     template_name = "library/index.html"
-    latest_books = Book.objects.order_by('pk')[:6][::-1]
+    count = 6
+    if request.user.is_staff:
+        count = 5
+    latest_books = Book.objects.order_by('pk')[:count][::-1]
     genres = Genre.objects.order_by('pk')
-    populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:6][::-1]
-    news = ADS.objects.order_by('pk')
+    populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:count][::-1]
+    news = ADS.objects.order_by('pk')[:(count - 3)][::-1]
     return render(request, template_name,
                   {"latest_books": latest_books, "genres": genres, 'check': populars, "news": news, 'media_url':settings.MEDIA_URL})
 
@@ -45,7 +48,8 @@ def search_success(request, text, search_type):
         search_res = Book.objects.filter(publishing_house__icontains=text)
     if search_type == "by_fulltext":
         #search_ress = Book.objects.annotate(similarity=TrigramSimilarity('name', text)).filter(similarity__gt=0.3).order_by('-similarity')
-        fulltext_check = Paper.objects.values("ISBN").annotate(all_text=StringAgg('text', delimiter=' '), similarity=TrigramSimilarity('all_text', text)).filter(similarity__gt=0.3).order_by('-similarity')
+        fulltext_check = Paper.objects.values("ISBN").annotate(all_text=StringAgg('text', delimiter=' '), similarity=TrigramSimilarity('all_text', text)).filter(~Q(similarity=0)).order_by('-similarity')
+        print(fulltext_check)
         book_ids = []
         for fulltext in fulltext_check:
             book_ids.append(fulltext["ISBN"])
@@ -60,7 +64,7 @@ def book_page(request, ids):
     context = {}
     last_read = 0
     book_mark = 0
-    mark = 0
+    mark = []
     usr_mark = 0
     if request.user.is_authenticated:
         last_read = LastPage.objects.filter(user_id=request.user, paper_id__ISBN=book)
@@ -152,14 +156,15 @@ def add_paper(request):
 def paper_page(request, ids):
     template_name = "library/paper.html"
     paper = Paper.objects.filter(pk=ids)[0]
-    last_read = LastPage.objects.filter(user_id=request.user, paper_id__ISBN=paper.ISBN)
-    if len(last_read) > 0:
-        if last_read[0].paper_id.paper_count < paper.paper_count:
-            last_read[0].paper_id = paper
-            last_read[0].save()
-    else:
-        last_read = LastPage(user_id=request.user, paper_id=paper)
-        last_read.save()
+    if request.user.is_authenticated:
+        last_read = LastPage.objects.filter(user_id=request.user, paper_id__ISBN=paper.ISBN)
+        if len(last_read) > 0:
+            if last_read[0].paper_id.paper_count < paper.paper_count:
+                last_read[0].paper_id = paper
+                last_read[0].save()
+        else:
+            last_read = LastPage(user_id=request.user, paper_id=paper)
+            last_read.save()
     all_paper = Paper.objects.filter(ISBN=paper.ISBN)
     prev_page = Paper.objects.filter(ISBN=paper.ISBN, paper_count=paper.paper_count - 1)
     next_page = Paper.objects.filter(ISBN=paper.ISBN, paper_count=paper.paper_count + 1)
@@ -247,6 +252,7 @@ def delete_book(request):
 
 
 def update_book(request):
+    print(request.POST.get("id"))
     book = Book.objects.filter(pk=request.POST.get("id"))[0]
     if request.method == 'POST' and request.user.is_authenticated:
         name = request.POST.get("name")
@@ -266,7 +272,12 @@ def update_book(request):
         book.year = year
         book.book_img = book_img
         book.save()
-        BookPDF(book_content=book, book_pdf=book_pdf).save()
+        bookpdf = BookPDF.objects.filter(book_content=book)
+        if len(bookpdf) == 0:
+            BookPDF(book_pdf=book_pdf, book_content=book).save()
+        else:
+            bookpdf.book_pdf = book_pdf
+            bookpdf.save()
     return redirect("book_page", ids=book.pk)
 
 
@@ -291,3 +302,7 @@ def profile(request):
     else:
         return redirect("index")
 
+
+def update_variable(value):
+    data = value
+    return data

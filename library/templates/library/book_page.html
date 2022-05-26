@@ -47,15 +47,52 @@
     justify-content: space-around;
 }
 
+.myMark {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.myMark:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.myMark:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.myMark:not(:checked) > label:before {
+    content: '★ ';
+}
+.myMark > input:checked ~ label {
+    color: #ffc700;
+}
+.myMark:not(:checked) > label:hover,
+.myMark:not(:checked) > label:hover ~ label {
+    color: #deb217;
+}
+.myMark > input:checked + label:hover,
+.myMark > input:checked + label:hover ~ label,
+.myMark > input:checked ~ label:hover,
+.myMark > input:checked ~ label:hover ~ label,
+.myMark > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+
     </style>
 </head>
 <body>
-
+<div style="min-height: 100%;">
 <div id="header">
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
     <ul style="font-size: 22px">
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Профиль</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
             <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'registration' %}"> Регистрация</a>
         {% endif %}
@@ -95,16 +132,59 @@
 </div>
 
 <div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'bookView')">View</button>
+    <button class="tablinks" onclick="openCity(event, 'bookView')" id="defaultOpen">Book</button>
+    {%if user.is_staff %}
     <button class="tablinks" onclick="openCity(event, 'bookChange')">Change</button>
+    {% endif %}
+    <button class="tablinks" onclick="openCity(event, 'bookComments')">Comments</button>
 </div>
 
 <div id="bookView" class="tab-content">
     <div class="firstPart" style="width: 400px;">
         <div class="bookPicture" style="background-image: url('{{media_url}}{{book.book_img}}'); background-size: cover;
-                            background-position: center center; width: 400px; height: 480px; border-radius: 20px;">
+                            background-position: center center; width: 400px; height: 480px; border-radius: 20px 20px 0px 0px "></div>
+    <div class="Test1" style="background-color: #F4F0F0; border-radius: 0px 0px 20px 20px;">
+        {%if user.is_authenticated %}
 
-        </div>
+                <div style="display: flex; justify-content: space-between">
+
+                <div style="margin-bottom: 20px; padding-top: 10px; width: 100%;">
+                    {% if usr_mark%}
+                            <form style="margin: auto" action="{%url 'mark_book' %}"  method="post">
+                                {% csrf_token %}
+                                <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                                <input type="text" name="mark" value="delete" method='POST' style="display: none">
+                                <div style="margin-left: 25%;">
+                                <button type="submit"  style="font-size:20px; padding: 20px;">Delete my mark</button>
+                                    </div>
+                            </form>
+                {% else %}
+                        <form action="{%url 'mark_book' %}"  method="post">
+                {% csrf_token %}
+                <div class="myMark">
+                <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                    <input name="mark" type="radio" value="5" id="star5">
+                <label for="star5" title="text">5 stars</label>
+                    <input name="mark" type="radio" value="4" id="star4">
+                <label for="star4" title="text">4 stars</label>
+                    <input name="mark" type="radio" value="3" id="star3">
+                <label for="star3" title="text">3 stars</label>
+                    <input name="mark" type="radio" value="2" id="star2">
+                <label for="star2" title="text">2 stars</label>
+                    <input name="mark" type="radio" value="1" id="star1">
+                <label for="star1" title="text">1 stars</label>
+                    </div>
+                        <button type="submit" style="border-radius: 5px; font-size: 20px;">Оценить</button>
+
+            </form>
+        {% endif %}
+
+                </div>
+                </div>
+        {% endif %}
+
+
+    </div>
         <div class="read" style="text-align: center; font-size: 32px;">
         {%if last_read %}
         {% for page in last_read %}
@@ -124,16 +204,25 @@
         <div style="text-align: center; font-size: 32px;" class="bookMark">
             <label>{% for mar in mark %}
     {% if forloop.counter == 2 %}
-        {{mar}}
+        Средняя оценка книги - {{mar}}
     {% endif %}
 {% endfor %}</label>
         </div>
-        <div class="type">
+    <div style="text-align: center">
+        Людей проголосовало -
+{% for mar in mark %}
+    {% if forloop.counter == 1 %}
+        {{mar}}
+    {% endif %}
+{% endfor %}
+    </div>
+    <hr>
+        <div class="type" style="display: flex; justify-content: space-between;">
             {%if user.is_authenticated %}
     {%if book_mark %}
         {% for mark in book_mark %}
             {% if forloop.counter == 1 %}
-                <div style="text-align: center; padding: 10px; font-size: 32px;"><label style="background-color: #67ACED; border-radius: 10px; padding: 10px;">{{mark.type}}</label></div>
+                <div style="text-align: center; padding: 10px; font-size: 20px;"><label style="background-color: #67ACED; border-radius: 10px; padding: 10px;">{{mark.type}}</label></div>
             {% endif %}
         {% endfor %}
     {%else%}
@@ -182,19 +271,40 @@
     <hr>
         <div class="rasstyazhka" style="display: flex; flex-wrap: wrap; justify-content: flex-start">
         <label style="font-size: 24px;">Жанры</label>
-                {% for genre in genres %}
                     <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; margin-left: 10px;">
+                    {% for genre in genres %}
                         <div class="genre__template">
                         <label class="genre__name"><a href="#">{{genre.genre_id.name}}</a></label>
                     </div>
+
+
+{%if user.is_staff %}
+
                     <form action="{%url 'delete_genre_from_book' %}"  method="post">
                         {% csrf_token %}
                             <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
                             <input type="text" name="genre" value="{{genre.pk}}" method='POST' style="display: none">
                             <button style="border-radius: 50px" type="submit" >X</button>
                     </form>
-                    </div>
+{% endif %}
                 {% endfor %}
+                    <div>
+                        <div style="padding: 5px;">
+                        {%if user.is_staff %}
+                                    <form action="{%url 'genre_to_book' %}" method="post">
+                                {% csrf_token %}
+                                <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                                <select name="genre">
+                                    {% for genre in all_genres %}
+                                        <option value="{{genre.pk}}">{{genre.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" >add</button>
+                            </form>
+                        {% endif %}
+                         </div>
+                    </div>
+                    </div>
     </div>
     <div style="font-size: 32px;" class="bookDescription">
             <hr>
@@ -203,7 +313,7 @@
             </div>
     <div class="thirdPart">
     <label style="font-size: 32px;">Страницы</label>
-    <div class="pages" style=" width:300px;margin-top: 40px;background-color: red; overflow: scroll; ">
+    <div class="pages" style=" width:300px;margin-top: 40px;background-color: #F4F0F0; overflow: scroll; ">
         {% for page in pages %}
         <div style="padding: 10px;">
             <label><a href="/library/paper_page/{{page.pk}}">Страница {{page.paper_count}}</a></label>
@@ -213,6 +323,7 @@
     </div>
     <div style="padding: 20px; width: 260px; ">
         <div>
+            {%if user.is_staff %}
         <form action="{%url 'add_paper' %}" method="post">
         {% csrf_token %}
         <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
@@ -225,15 +336,18 @@
         <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
         <button style="border-radius: 5px;" type="submit" >Удалить последнюю страницу</button>
     </form>
+            {% endif %}
             </div>
     </div>
     </div>
-    </div>
+</div>
 
 <div id="bookChange" class="tab-content">
 {%if user.is_staff %}
-    <form action="{%url 'update_book' %}"  method="post" enctype="multipart/form-data">
+    <form style="display: flex;
+    justify-content: space-between;" action="{%url 'update_book' %}"  method="post" enctype="multipart/form-data">
         {% csrf_token %}
+    <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
     <div class="firstPart" style="width: 400px;">
         <div class="bookPicture" style="width: 400px; height: 480px; border-radius: 20px;">
         <input type="file" name="book_img" accept="image/*" value="" method='POST' required> - Oblozhka
@@ -241,56 +355,19 @@
         <input type="file" accept="application/pdf" name="book_pdf" value="" method='POST' required> - pdf
 </div>
         </div>
-        <div class="read" style="text-align: center; font-size: 32px;">
-        {%if last_read %}
-        {% for page in last_read %}
-            {% if forloop.counter == 1 %}
-                <a href="/library/paper_page/{{page.paper_id.id}}">Продолжить</a>
-            {% endif %}
-        {% endfor %}
-{%else%}
-        {% for page in pages %}
-            {% if forloop.counter == 1 %}
-                <a href="/library/paper_page/{{page.pk}}">Начать читать</a>
-            {% endif %}
-        {% endfor %}
-{% endif %}
-    </div>
     <hr>
-        <div style="text-align: center; font-size: 32px;" class="bookMark">
-            <label>{% for mar in mark %}
-    {% if forloop.counter == 2 %}
-        {{mar}}
-    {% endif %}
-{% endfor %}</label>
-        </div>
         <div class="type">
             {%if user.is_authenticated %}
     {%if book_mark %}
         {% for mark in book_mark %}
             {% if forloop.counter == 1 %}
-                <div style="text-align: center; padding: 10px; font-size: 32px;"><label style="background-color: #67ACED; border-radius: 10px; padding: 10px;">{{mark.type}}</label></div>
+                <div style="text-align: center; padding: 10px; font-size: 32px;"><button style="background-color: #67ACED;
+                border-radius: 10px; padding: 10px;" type="submit" >Обновить книгу</button></div>
             {% endif %}
         {% endfor %}
     {%else%}
         <h2>Добавить в список</h2>
     {% endif %}
-        <form action="{%url 'change_book_mark' %}" method="post" >
-        <select style="text-align: center; border-radius: 5px 5px 0px 0px;" name="type">
-            <option style="padding: 10px;" value="Читаю" id="contactChoice4">Читаю</option>
-            <option style="padding: 10px;" value="В планах" id="contactChoice4">В планах</option>
-            <option style="padding: 10px;" value="Прочитано" id="contactChoice4">Прочитано</option>
-            <option style="padding: 10px;" value="Любимое" id="contactChoice4">Любимое</option>
-            {%if book_mark %}
-                <option name="type" type="radio" value="delete" id="contactChoice4">Удалить</option>
-            {% endif %}
-        </select>
-        <div>
-            {% csrf_token %}
-            <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-            <button type="submit" style="width: 90px;">Change</button>
-        </div>
-    </form>
 {% endif %}
         </div>
     </div>
@@ -328,166 +405,63 @@
 {% endif %}
 </div>
 
-pdf = <a href="{{media_url}}{{ pdf.book_pdf }}"> pdf
-</a>
-mark =
-{% for mar in mark %}
-    {% if forloop.counter == 2 %}
-        {{mar}}
-    {% endif %}
-{% endfor %}
-count of peaple =
-{% for mar in mark %}
-    {% if forloop.counter == 1 %}
-        {{mar}}
-    {% endif %}
-{% endfor %}
-{% if usr_mark%}
-    <form action="{%url 'mark_book' %}"  method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <input type="text" name="mark" value="delete" method='POST' style="display: none">
-        <button type="submit" >delete</button>
-    </form>
-{% else %}
-    <form action="{%url 'mark_book' %}"  method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <p style="display: inline;">
-            <input name="mark" type="radio" value="1" id="contactChoice4" checked>1</p>
-        <p style="display: inline;">
-            <input name="mark" type="radio" value="2" id="contactChoice4" checked>2</p>
-        <p style="display: inline;">
-            <input name="mark" type="radio" value="3" id="contactChoice4" checked>3</p>
-        <p style="display: inline;">
-            <input name="mark" type="radio" value="4" id="contactChoice4" checked>4</p>
-        <p style="display: inline;">
-            <input name="type" type="radio" value="5" id="contactChoice4" checked>5</p>
-        <button type="submit" >Mark</button>
-    </form>
-{% endif %}
-жанры =
-{% for genre in genres %}
-    <h2>{{genre.genre_id.name}}</h2>
-    <form action="{%url 'delete_genre_from_book' %}"  method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <input type="text" name="genre" value="{{genre.pk}}" method='POST' style="display: none">
-        <button type="submit" >delete</button>
-    </form>
-{% endfor %}
-страницы =
-{% for page in pages %}
-    <a href="/library/paper_page/{{page.pk}}">{{page.paper_count}}</a>
-{% endfor %}
-коменты =
-{% for comment in comments %}
-    <h2>{{comment.user_id.username}}</h2>
-    <h2>{{comment.text}}</h2>
-    {%if user.is_staff or user.pk == comment.user_id.pk%}
-        <form action="{%url 'delete_comment' %}"  method="post">
-            {% csrf_token %}
-            <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-            <input type="text" name="comment" value="{{comment.pk}}" method='POST' style="display: none">
-            <button type="submit" >delete</button>
-        </form>
-    {% endif %}
-{% endfor %}
-{%if user.is_authenticated %}
+<div id="bookComments" class="tab-content">
+    <div class="comment" style="width: 80%; margin: auto; background-color: #F4F0F0; height: 500px; overflow: scroll;">
+    {%if user.is_authenticated %}
 <form action="{%url 'add_comment' %}"  method="post">
 {% csrf_token %}
-    <input type="text" name="add_comment" value="" method='POST' placeholder="Comment" required>
-    <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-    <button type="submit" >add</button>
+        <div class="news__template">
+                                <div style="display: flex;
+                                        justify-content: space-between;">
+                                    <div style="word-wrap: break-word;" class="news__template__message">
+                                        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                                        <textarea type="text" name="add_comment" value="" method='POST' placeholder="Comment" required
+                                                  style="padding:5px; font-size:24px;" cols="80" rows="3" maxlength="200"></textarea>
+                                    </div>
+                                </div>
+                                <div class="news__template__info">
+                                    <button style="border-radius: 5px; font-size: 14px;" type="submit" >add</button>
+                                </div>
+            </div>
+        <hr>
+
 </form>
-{% endif %}
-{%if user.is_staff %}
-    <form action="{%url 'delete_book' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <button type="submit" >Delete book</button>
-    </form>
-    <form action="{%url 'genre_to_book' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <select name="genre">
-            {% for genre in all_genres %}
-                <option value="{{genre.pk}}">{{genre.name}}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" >add</button>
-    </form>
-    <form action="{%url 'add_paper' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <button type="submit" >add</button>
-    </form>
-    <form action="{%url 'delete_paper' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <button type="submit" >Delete last paper</button>
-    </form>
-{% endif %}
-{%if last_read %}
-        {% for page in last_read %}
-            {% if forloop.counter == 1 %}
-                <a href="/library/paper_page/{{page.paper_id.id}}">Продолжить</a>
-            {% endif %}
-        {% endfor %}
-{%else%}
-        {% for page in pages %}
-            {% if forloop.counter == 1 %}
-                <a href="/library/paper_page/{{page.pk}}">Начать читать</a>
-            {% endif %}
-        {% endfor %}
-{% endif %}
-{%if user.is_authenticated %}
-    {%if book_mark %}
-        {% for mark in book_mark %}
-            {% if forloop.counter == 1 %}
-                {{mark.type}}
-            {% endif %}
-        {% endfor %}
-    {%else%}
-        <h2>Добавить в список</h2>
-    {% endif %}
-        <form action="{%url 'change_book_mark' %}" method="post" >
-            <p style="display: inline;">
-                            <input name="type" type="radio" value="Читаю" id="contactChoice4" checked>Читаю</p>
-            <p style="display: inline;">
-                            <input name="type" type="radio" value="В планах" id="contactChoice4" checked>В планах</p>
-            <p style="display: inline;">
-                            <input name="type" type="radio" value="Прочитано" id="contactChoice4" checked>Прочитано</p>
-            <p style="display: inline;">
-                            <input name="type" type="radio" value="Любимое" id="contactChoice4" checked>Любимое</p>
-            {%if book_mark %}
-                <p style="display: inline;">
-                    <input name="type" type="radio" value="delete" id="contactChoice4" checked>Удалить</p>
-            {% endif %}
-            {% csrf_token %}
-            <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-            <button type="submit" >Change</button>
-    </form>
-{% endif %}
-{%if user.is_staff %}
-    <form action="{%url 'update_book' %}"  method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
-        <input type="text" name="name" value="{{book.name}}" method='POST' required>
-        <input type="text" name="book_country" value="{{book.book_country}}" method='POST' required>
-        <input type="text" name="book_description" value="{{book.book_description}}" method='POST' required>
-        <input type="text" name="publishing_house" value="{{book.publishing_house}}" method='POST' required>
-        <input type="text" name="author_name" value="{{book.author_name}}" method='POST' required>
-        <input type="date" name="year" value="{{book.year}}" method='POST' required>
-        <input type="file" name="book_img" accept="image/*" value="" method='POST' required> - image
-        <input type="file" name="book_pdf" value="" method='POST' required> - pdf
-        <button type="submit" >Обновить книгу</button>
-    </form>
-{% endif %}
+                                        {% endif %}
+        {% for comment in comments %}
+            <div class="news__template">
+                                <div style="display: flex;
+                                        justify-content: space-between;">
+                                    <div style="word-wrap: break-word;" class="news__template__message">
+                                        {{comment.text}}
+                                    </div>
+                                    <div>
+                                        {%if user.is_staff or user.pk == comment.user_id.pk%}
+                                            <form action="{%url 'delete_comment' %}"  method="post">
+                                                {% csrf_token %}
+                                                <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
+                                                <input type="text" name="comment" value="{{comment.pk}}" method='POST' style="display: none">
+                                                <button type="submit" style="border-radius: 5px; font-size: 12px">Удалить</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="news__template__info">
+                                    <div class="news__template__info__author">{{comment.user_id.username}}</div>
+                                </div>
+            </div>
+        <hr>
+
+{% endfor %}
+
+
+    </div>
+</div>
+
+</div>
 <footer>
     <p id="themeText">Тема
-    <button id="darkTheme">T</button>
-    <button id="whiteTheme">T</button>
+    <button id="darkTheme" disabled="disabled">T</button>
+    <button id="whiteTheme" disabled="disabled">T</button>
     </p>
 </footer>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
@@ -514,6 +488,8 @@ count of peaple =
     document.getElementById(cityName).style.display = "flex";
     evt.currentTarget.className += " active";
 }
+
+    document.getElementById("defaultOpen").click();
 </script>
 </body>
 </html>
