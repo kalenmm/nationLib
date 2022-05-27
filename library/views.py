@@ -291,3 +291,39 @@ def divide_book(file, ISBN):
             paper = Paper(content='paper_pdf/' + name, paper_count=i + 1, ISBN=ISBN)
             paper.save()
 
+def genre_selection(request):
+    if request.method == 'POST':
+        genres = Genre.objects.order_by("pk")
+        selected = []
+        for genre in genres:
+            res = request.POST.get(genre.name)
+            if res is not None:
+                selected.append(res)
+        ch = 0
+        if len(selected) == 0:
+            ch = 1
+            selected_genres = Genre.objects.order_by("pk")
+        else:
+            selected_genres = Genre.objects.filter(name__in=selected)
+        books = []
+        genre_lists = GenreList.objects.filter(genre_id__in=selected_genres)
+        for genre_list in genre_lists:
+            books.append(genre_list.ISBN)
+        checks =[]
+        for genre in genres:
+            if genre in selected_genres and ch == 0:
+                checks.append([genre, "yes"])
+            else:
+                checks.append([genre, "no"])
+        return render(request, "library/catalog.html", {"books": books, "checks": checks, 'media_url': settings.MEDIA_URL})
+    else:
+        return redirect("index")
+
+
+def catalog(request):
+    books = Book.objects.order_by("pk")
+    genres = Genre.objects.order_by("pk")
+    checks = []
+    for genre in genres:
+        checks.append([genre, "no"])
+    return render(request, "library/catalog.html", {"books": books, "checks": checks, 'media_url':settings.MEDIA_URL})

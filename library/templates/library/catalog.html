@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for book in books %}
+    <div class="bookTemplate">
+        <div class="bookPic" href="book/{{book.pk}}" style="background-image: url('{{media_url}}{{book.book_img}}');
+                            background-size: cover;
+                            background-position: center center;">
+        </div>
+        <p class="bookName"><a href="book/{{book.pk}}">{{book.name}}</a></p>
+    </div>
+{% endfor %}
+<form action="{%url 'genre_selection' %}" method="post">
+    {% csrf_token %}
+    {% for objects in checks %}
+        {% for genre in objects %}
+            {% if forloop.counter == 1 %}
+                <input type="checkbox" name="{{ genre.name }}" value="{{ genre.name }}"
+            {% endif %}
+        {% endfor %}
+        {% for genre in objects %}
+            {% if forloop.counter == 2 and genre == "yes"%}
+                checked
+            {% endif %}
+        {% endfor %}
+        {% for genre in objects %}
+            {% if forloop.counter == 1%}
+                >
+                <label for="vehicle1">{{ genre.name }}</label><br>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>

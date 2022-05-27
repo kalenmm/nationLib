@@ -26,4 +26,6 @@ urlpatterns = [
     path('mark_book/', mark_book, name='mark_book'),
     path('delete_book/', delete_book, name='delete_book'),
     path('update_book/', update_book, name='update_book'),
+    path('genre_selection/', genre_selection, name='genre_selection'),
+    path('catalog/', catalog, name='catalog'),
 ]
