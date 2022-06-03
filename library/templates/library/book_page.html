@@ -137,18 +137,20 @@
 </div>
 
 <div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'bookView')" id="defaultOpen">Book</button>
+    <button class="tablinks" onclick="openCity(event, 'bookView')" id="defaultOpen">Книга</button>
     {%if user.is_staff %}
-    <button class="tablinks" onclick="openCity(event, 'bookChange')">Change</button>
-    {% endif %}
-    <button class="tablinks" onclick="openCity(event, 'bookComments')">Comments</button>
-</div>
-
-                    <form action="{%url 'delete_book' %}"  method="post">
+    <button class="tablinks" onclick="openCity(event, 'bookChange')">Изменить</button>
+        <form action="{%url 'delete_book' %}"  method="post">
                         {% csrf_token %}
                             <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
                             <button type="submit" >Удалить</button>
                     </form>
+    {% endif %}
+    <button class="tablinks" onclick="openCity(event, 'bookComments')">Комментарии</button>
+
+</div>
+
+
 <div id="bookView" class="tab-content">
     <div class="firstPart" style="width: 400px;">
         <div class="bookPicture" style="background-image: url('{{media_url}}{{book.book_img}}'); background-size: cover;
@@ -164,8 +166,8 @@
                                 {% csrf_token %}
                                 <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
                                 <input type="text" name="mark" value="delete" method='POST' style="display: none">
-                                <div style="margin-left: 25%;">
-                                <button type="submit"  style="font-size:20px; padding: 20px;">Delete my mark</button>
+                                <div style="margin-left: 20%;">
+                                <button type="submit"  style="font-size:20px; padding: 20px;">Удалить мою оценку</button>
                                     </div>
                             </form>
                 {% else %}
@@ -274,7 +276,7 @@
             </div>
             <div>
                 <div>
-                    <a style="padding: 10px; border-radius:10px;background-color: #C4C4C4;" href="{{media_url}}{{ pdf.book_pdf }}">PDF format</a>
+                    <a style="padding: 10px; border-radius:10px;background-color: #C4C4C4;" href="{{media_url}}{{ pdf.book_pdf }}">PDF формат</a>
                 </div>
             </div>
         </div>

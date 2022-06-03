@@ -87,14 +87,19 @@
                 {% endif %}
             {% endfor %}
         </div>
-{% else %}
-    Ничего не найдено
+{% endif %}
+    {% if search_res%}
+
+        {% else %}
+        <div style="padding-top:120px;text-align: center;">
+            <h1>Ничего не найдено!</h1>
+        </div>
 {%endif%}
     </div>
 <footer>
     <p id="themeText">Тема
-    <button id="darkTheme" disabled="disabled">T</button>
-    <button id="whiteTheme" disabled="disabled">T</button>
+    <button id="darkTheme">T</button>
+    <button id="whiteTheme">T</button>
     </p>
 </footer>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
