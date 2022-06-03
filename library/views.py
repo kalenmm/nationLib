@@ -15,9 +15,9 @@ def IndexView(request):
     count = 6
     if request.user.is_staff:
         count = 5
-    latest_books = Book.objects.order_by('pk')[:count][::-1]
+    latest_books = Book.objects.order_by('pk')[::-1][:count]
     genres = Genre.objects.order_by('pk')
-    populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[:count][::-1]
+    populars = Rating.objects.annotate(sum=Sum('mark')).order_by('sum')[::-1][:6]
     news = ADS.objects.order_by('pk')[:(count - 3)][::-1]
     return render(request, template_name,
                   {"latest_books": latest_books, "genres": genres, 'check': populars, "news": news, 'media_url':settings.MEDIA_URL})
@@ -311,10 +311,21 @@ def genre_selection(request):
             selected_genres = Genre.objects.order_by("pk")
         else:
             selected_genres = Genre.objects.filter(name__in=selected)
-        books = []
+        books = {}
         genre_lists = GenreList.objects.filter(genre_id__in=selected_genres)
         for genre_list in genre_lists:
-            books.append(genre_list.ISBN)
+            if genre_list.ISBN in books:
+                books[genre_list.ISBN] = books[genre_list.ISBN] + 1
+            else:
+                books[genre_list.ISBN] = 1
+        new_books = []
+        for book in books:
+            if ch == 0:
+                if books[book] >= len(selected_genres):
+                    new_books.append(book)
+            else:
+                new_books.append(book)
+        books = new_books
         checks =[]
         for genre in genres:
             if genre in selected_genres and ch == 0:
