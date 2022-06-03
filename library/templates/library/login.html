@@ -9,15 +9,38 @@
           crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/white.css'%}" type="text/css" id="theme">
+    <style>
+        .forma{
+            padding:20px;
+            background-color: #F4F0F0;
+            border-radius: 0px 0px 20px 20px;
+        }
+
+        .forma input{
+            border-radius: 5px;
+        }
+        .forma li{
+            font-size: 14px;
+        }
+        .forma ul{
+            margin: auto;
+        }
+    </style>
+
 </head>
 <body>
 <div id="header">
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
     <ul style="font-size: 22px">
+        <li style="margin-left: 10%;">
+            <a href="/library/catalog">
+              Каталог
+            </a>
+        </li>
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 60%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
-            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'registration' %}"> Регистрация</a>
+            <li style="margin-left: 60%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
     </ul>
 <form class="" action="{%url 'search' %}" method="post" >
@@ -62,7 +85,8 @@
     <div style="text-align: center; background-color: #67ACED; height: 75px; border-radius: 20px 20px 0px 0px; ">
         <h1 style="padding: 20px;" class="text-4xl font-bold text-blue-500">Login</h1>
 </div>
-    <div style="padding: 20px; background-color: #F4F0F0; border-radius: 0px 0px 20px 20px;" class="module my-4">
+
+    <div class="forma">
             {% if form.errors %}
                 <p class="py-2 text-gray-700 font-medium">Your username and password didn't match. Please try again.</p>
             {% else %}
@@ -88,5 +112,7 @@
     <button id="whiteTheme" disabled="disabled">T</button>
     </p>
 </footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="{% static 'js/lib.js'%}"></script>
 </body>
 </html>

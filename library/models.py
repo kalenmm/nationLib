@@ -1,12 +1,5 @@
-from django.db import models, migrations
+from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.operations import TrigramExtension
-
-
-class Migration(migrations.Migration):
-    operations = [
-        TrigramExtension(),
-    ]
 
 
 class Book(models.Model):
@@ -24,6 +17,7 @@ class BookPDF(models.Model):
     id = models.AutoField(primary_key=True)
     book_content = models.ForeignKey(Book, on_delete=models.CASCADE)
     book_pdf = models.FileField(upload_to='book_pdf')
+    book_text = models.TextField()
 
 
 class User(AbstractUser):

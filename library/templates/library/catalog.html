@@ -1,12 +1,77 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/white.css'%}" type="text/css" id="theme">
+    <style>
+        #form{
+            padding: 5px;
+        }
+        #form input{
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
+<div id="header" style="position: fixed;">
+        <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
+    <ul style="font-size: 22px">
+        <li style="margin-left: 10%;">
+            <a href="/library/catalog">
+              Каталог
+            </a>
+        </li>
+        {% if user.is_authenticated%}
+            <li style="margin-left: 60%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+        {%else%}
+            <li style="margin-left: 60%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
+        {% endif %}
+    </ul>
+<form class="" action="{%url 'search' %}" method="post" >
+            <div class="wrap">
+                <input type="text" class="input" name="search_field" value="" method='POST'
+                       placeholder="Search course" required>
+                <i style="display:inline;" class="fas fa-search" aria-hidden="true"></i>
+                <div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_name" id="contactChoice1">Книга</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_author" id="contactChoice2">Автор</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_country" id="contactChoice3" checked>Страна</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_publisher" id="contactChoice4" checked>Издатель</p>
+                    </div>
+                    <div class="searchCriteries">
+                        <p style="display: inline;">
+                            <input name="type" type="radio" value="by_fulltext" checked>Текст</p>
+                    </div>
+            </div>
+
+        </div>
+            {% csrf_token %}
+    </form>
+
+</div>
+<div style="padding-top:50px;min-height: 620px; display: flex; justify-content: space-between;">
+
+<div class="mainList" style="display:flex; justify-content: flex-start; flex-wrap: wrap; width:60%; padding:20px;">
+{% if books %}
 {% for book in books %}
-    <div class="bookTemplate">
+    <div class="bookTemplate" style="margin-left: 20px;">
         <div class="bookPic" href="book/{{book.pk}}" style="background-image: url('{{media_url}}{{book.book_img}}');
                             background-size: cover;
                             background-position: center center;">
@@ -14,7 +79,16 @@
         <p class="bookName"><a href="book/{{book.pk}}">{{book.name}}</a></p>
     </div>
 {% endfor %}
-<form action="{%url 'genre_selection' %}" method="post">
+{% else %}
+    <div style="height: 100%; width: 100%; text-align: center;">
+    <h1 style="padding: 20%;">Книг удовлетворяющих ваших категорий не обнаружено</h1>
+    </div>
+{% endif %}
+</div>
+
+<div style="margin-left:70%; margin-top: 50px; width: 30%; background-color: #F4F0F0; padding-left: 30px; overflow: auto; height: 590px; position: fixed;">
+<h1 style="margin-left: 20px;">Жанры</h1>
+    <form id="form" action="{%url 'genre_selection' %}" method="post">
     {% csrf_token %}
     {% for objects in checks %}
         {% for genre in objects %}
@@ -36,5 +110,19 @@
     {% endfor %}
     <input type="submit" value="Submit">
 </form>
+
+</div>
+
+
+</div>
+
+<footer>
+    <p id="themeText">Тема
+    <button id="darkTheme" disabled="disabled">T</button>
+    <button id="whiteTheme" disabled="disabled">T</button>
+    </p>
+</footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="{% static 'js/lib.js'%}"></script>
 </body>
 </html>

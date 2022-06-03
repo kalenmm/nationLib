@@ -1,15 +1,14 @@
-from django.contrib.postgres.search import TrigramSimilarity
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank, SearchHeadline
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 from nationLib import settings
-from django.contrib.postgres.aggregates.general import StringAgg
 from .forms import *
 from django.db.models import Sum, Avg, Count
 from django.urls import reverse_lazy
-from django.db.models import Q
 from PyPDF2 import PdfWriter, PdfReader
-from django.core.files.base import ContentFile
-
+import fitz
+from pprint import pprint as pp
+from django.db import connection, reset_queries
 
 def IndexView(request):
     template_name = "library/index.html"
@@ -51,13 +50,11 @@ def search_success(request, text, search_type):
     if search_type == "by_publisher":
         search_res = Book.objects.filter(publishing_house__icontains=text)
     if search_type == "by_fulltext":
-        #search_ress = Book.objects.annotate(similarity=TrigramSimilarity('name', text)).filter(similarity__gt=0.3).order_by('-similarity')
-        fulltext_check = Paper.objects.values("ISBN").annotate(all_text=StringAgg('text', delimiter=' '), similarity=TrigramSimilarity('all_text', text)).filter(~Q(similarity=0)).order_by('-similarity')
-        print(fulltext_check)
-        book_ids = []
-        for fulltext in fulltext_check:
-            book_ids.append(fulltext["ISBN"])
-        search_res = Book.objects.filter(pk__in=book_ids)
+        vector = SearchVector('book_text')
+        query = SearchQuery(text)
+        search_headline = SearchHeadline('book_text', query)
+        fulltext_check = BookPDF.objects.annotate(rank=SearchRank(vector, query)).annotate(headline=search_headline).filter(rank__gte=0.001).order_by('-rank')
+        search_res = fulltext_check
 
     return render(request, "library/search.html",
                     {"search_res": search_res, "search_type": search_type, 'media_url':settings.MEDIA_URL})
@@ -140,6 +137,7 @@ def delete_comment(request):
     if request.method == 'POST' and request.user.is_staff:
         Comments.objects.filter(pk=request.POST.get("comment")).delete()
     return redirect("book_page", ids=book.pk)
+
 
 def paper_page(request, ids):
     template_name = "library/paper.html"
@@ -242,12 +240,20 @@ def update_book(request):
         book.year = year
         book.book_img = book_img
         book.save()
+        text = ''
         bookpdf = BookPDF.objects.filter(book_content=book)
         if len(bookpdf) == 0:
             BookPDF(book_pdf=book_pdf, book_content=book).save()
         else:
             bookpdf[0].book_pdf = book_pdf
             bookpdf[0].save()
+        bookpdf = BookPDF.objects.filter(book_content=book).order_by("pk")[::-1][0]
+        loc = "./media/" + str(bookpdf.book_pdf)
+        with fitz.open(loc) as doc:
+            for page in doc:
+                text += page.get_text()
+        bookpdf.book_text = text
+        bookpdf.save()
     return redirect("book_page", ids=book.pk)
 
 

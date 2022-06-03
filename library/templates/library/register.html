@@ -31,11 +31,16 @@
 <body>
 <div id="header">
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
-    <ul class="headerUl" style="font-size: 22px">
+    <ul style="font-size: 22px">
+        <li style="margin-left: 10%;">
+            <a href="/library/catalog">
+              Каталог
+            </a>
+        </li>
         {% if user.is_authenticated%}
-            <li class="headerLi" style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 60%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
-            <li class="headerLi" style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'registration' %}"> Регистрация</a>
+            <li style="margin-left: 60%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
     </ul>
 <form class="" action="{%url 'search' %}" method="post" >
@@ -101,5 +106,7 @@
     <button id="whiteTheme" disabled="disabled">T</button>
     </p>
 </footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="{% static 'js/lib.js'%}"></script>
 </body>
 </html>

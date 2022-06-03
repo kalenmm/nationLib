@@ -14,10 +14,15 @@
 <div id="header">
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
     <ul style="font-size: 22px">
+        <li style="margin-left: 10%;">
+            <a href="/library/catalog">
+              Каталог
+            </a>
+        </li>
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 60%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
-            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
+            <li style="margin-left: 60%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
     </ul>
 <form class="" action="{%url 'search' %}" method="post" >
@@ -53,19 +58,33 @@
     </form>
 
 </div>
-<div class="main">
+
+<div class="main" style="min-height: 570px;">
 {% if search_type%}
     <p style="font-size: 24px;">
         </p>
         <div class="searchedBooks">
             {% for book in search_res %}
-                <div class="bookTemplate">
+                {% if search_type == "by_fulltext"%}
+                    <div style="width: 800px; display: flex; justify-content: space-between;">
+                        <div class="bookTemplate">
+                            <div class="bookPic" href="book/{{book.book_content.pk}}" style="background-image: url('{{media_url}}{{book.book_content.book_img}}');
+                                    background-size: cover;
+                                    background-position: center center;"></div>
+                            <p class="bookName"><a href="/library/book/{{book.book_content.pk}}">{{book.book_content.name}}</a></p>
+                            </div>
+                        <div style="padding: 30px; display: flex; width: 500px;">
+                            <p style="padding-top: 100px;">{{ book.headline|safe }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="bookTemplate">
                     <div class="bookPic" href="book/{{book.pk}}" style="background-image: url('{{media_url}}{{book.book_img}}');
                             background-size: cover;
-                            background-position: center center;">
-                    </div>
+                            background-position: center center;"></div>
                     <p class="bookName"><a href="/library/book/{{book.pk}}">{{book.name}}</a></p>
-                </div>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
 {% else %}

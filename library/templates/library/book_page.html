@@ -91,10 +91,15 @@
 <div id="header">
         <p id="logo" style="margin-left: 5%"><a href="/library/">NationalLib</a></p>
     <ul style="font-size: 22px">
+        <li style="margin-left: 10%;">
+            <a href="/library/catalog">
+              Каталог
+            </a>
+        </li>
         {% if user.is_authenticated%}
-            <li style="margin-left: 75%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
+            <li style="margin-left: 60%;"><a href="{% url 'profile' %}">Мои закладки</a></li> | <a href="{% url 'logout' %}"> Выход</a>
         {%else%}
-            <li style="margin-left: 75%;"></li><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'registration' %}"> Регистрация</a>
+            <li style="margin-left: 60%;"></li><a href="{% url 'login' %}">Вход</a></li> | <a href="{% url 'registration' %}"> Регистрация</a></li>
         {% endif %}
     </ul>
 <form class="" action="{%url 'search' %}" method="post" >
@@ -261,10 +266,10 @@
         <div class="bookFullInfo" style=" border-radius:10px;padding: 20px; background-color: #F4F0F0; width: 100%; display: flex; justify-content: space-between;">
             <div>
             <div>
-            <label>book_country - {{book.book_country}}</label>
-            <p>publishing_house - {{book.publishing_house}}</p>
-            <p>Author - {{author.author_id.first_name}} {{author.author_id.last_name}}</p>
-            <p>year - {{book.year}}</p>
+            <label>Book Country - {{book.book_country}}</label>
+            <p>Publishing House - {{book.publishing_house}}</p>
+            <p>Author - {{book.author_name}}</p>
+            <p>Year - {{book.year}}</p>
             </div>
             </div>
             <div>
@@ -318,7 +323,7 @@
             </div>
     <div class="thirdPart">
     <label style="font-size: 32px;">Страницы</label>
-    <div class="pages" style=" width:300px;margin-top: 40px;background-color: #F4F0F0; overflow: scroll; ">
+    <div class="pages" style=" width:300px; height:400px; margin-top: 40px;background-color: #F4F0F0; overflow: scroll; ">
         {% for page in pages %}
         <div style="padding: 10px;">
             <label><a href="/library/paper_page/{{page.pk}}">Страница {{page.paper_count}}</a></label>
@@ -341,7 +346,7 @@
     <input type="text" name="id" value="{{book.pk}}" method='POST' style="display: none">
     <div class="firstPart" style="width: 400px;">
         <div class="bookPicture" style="width: 400px; height: 480px; border-radius: 20px;">
-        <input type="file" name="book_img" accept="image/*" value="" method='POST' required> - Oblozhka
+        <input type="file" name="book_img" accept="image/*" value="" method='POST' required> - Обложка книги
             <div style="margin-top: 40px;">
         <input type="file" accept="application/pdf" name="book_pdf" value="" method='POST' required> - pdf
 </div>
